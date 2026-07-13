@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReOB BME - Research Objectives Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#475569',
+                        accent: '#0ea5e9',
+                        success: '#10b981',
+                        pubmed: '#11406c',
+                        consensus: '#5c5cff'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        .smart-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+            margin-right: 8px;
+            font-size: 12px;
+        }
+        .bg-s { background-color: #3b82f6; }
+        .bg-m { background-color: #10b981; }
+        .bg-a { background-color: #f59e0b; }
+        .bg-r { background-color: #8b5cf6; }
+        .bg-t { background-color: #ef4444; }
+        
+        .loading-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        
+        /* Styles for generated literature review HTML */
+        .lit-review-content h1, .lit-review-content h2, .lit-review-content h3 { font-size: 1.125rem; font-weight: 700; color: #1e293b; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .lit-review-content p { margin-bottom: 1rem; color: #334155; line-height: 1.625; }
+        .lit-review-content ul, .lit-review-content ol { padding-left: 1.5rem; margin-bottom: 1rem; color: #334155; }
+        .lit-review-content li { margin-bottom: 0.5rem; }
+        .lit-review-content strong { color: #1e293b; font-weight: 600; }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary text-white p-2 rounded-lg">
+                    <i class="fas fa-microscope text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 leading-tight">ReOB BME</h1>
+                    <p class="text-xs text-slate-500 font-medium">Research Objectives Generator</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 text-sm font-medium text-slate-500">
+                Powered by <span class="text-primary font-bold"><i class="fas fa-bolt text-yellow-400"></i> Gemini 2.5 Flash</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-6xl mx-auto w-full px-4 py-8 flex flex-col lg:flex-row gap-8">
+        
+        <!-- Input Section (Left) -->
+        <div class="w-full lg:w-1/3 flex flex-col gap-6">
+            <div class="glass-panel rounded-2xl p-6 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-accent"></div>
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-pen-nib text-primary"></i> Study Details
+                </h2>
+                
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <label for="topicInput" class="block text-sm font-semibold text-slate-700 mb-1">Topic or Title of Study *</label>
+                        <textarea id="topicInput" rows="4" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none text-sm placeholder-slate-400" placeholder="e.g., The impact of intermittent fasting on HbA1c levels in adults with type 2 diabetes over 6 months..."></textarea>
+                    </div>
+                    
+                    <div>
+                        <label for="contextInput" class="block text-sm font-semibold text-slate-700 mb-1">Additional Context (Optional)</label>
+                        <input type="text" id="contextInput" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm placeholder-slate-400" placeholder="Target population, specific methods, duration...">
+                    </div>
+
+                    <button id="generateBtn" class="w-full bg-primary hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 mt-2 shadow-lg shadow-blue-500/30">
+                        <i class="fas fa-magic"></i> Generate Design
+                    </button>
+                    
+                    <div id="errorMsg" class="hidden mt-2 p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-200"></div>
+                </div>
+            </div>
+
+            <!-- Literature Review Upload Section -->
+            <div class="glass-panel rounded-2xl p-6 border border-slate-200">
+                <h3 class="text-slate-800 font-bold text-sm mb-3 flex items-center gap-2">
+                    <i class="fas fa-file-upload text-primary"></i> Upload Literature Review
+                </h3>
+                <div class="flex items-center justify-center w-full">
+                    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6 text-slate-500 text-center" id="uploadPrompt">
+                            <i class="fas fa-cloud-upload-alt text-2xl mb-2"></i>
+                            <p class="mb-1 text-xs font-semibold">Click to upload text file</p>
+                            <p class="text-[10px]">TXT, MD or CSV</p>
+                        </div>
+                        <div id="fileSuccess" class="hidden flex-col items-center justify-center pt-5 pb-6 text-success text-center px-4 w-full">
+                            <i class="fas fa-check-circle text-2xl mb-2"></i>
+                            <p class="text-xs font-semibold truncate w-full" id="fileNameDisplay">File loaded</p>
+                        </div>
+                        <input id="dropzone-file" type="file" class="hidden" accept=".txt,.md,.csv" />
+                    </label>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-2 text-center">Extracted text will be analyzed to generate objectives.</p>
+            </div>
+        </div>
+
+        <!-- Output Section (Right) -->
+        <div class="w-full lg:w-2/3 flex flex-col gap-6">
+            
+            <!-- Loading State -->
+            <div id="loadingState" class="hidden glass-panel rounded-2xl p-12 flex flex-col items-center justify-center text-center border border-slate-200 h-full min-h-[400px]">
+                <div class="relative w-20 h-20 mb-6">
+                    <div class="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
+                    <div class="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-spin"></div>
+                    <i class="fas fa-brain absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-primary text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">Analyzing Academic Context...</h3>
+                <p class="text-sm text-slate-500 max-w-xs loading-pulse">Consulting scientific literature, extracting variables, and drafting SMART objectives using Gemini 2.5 Flash.</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="glass-panel rounded-2xl p-12 flex flex-col items-center justify-center text-center border border-slate-200 h-full min-h-[400px]">
+                <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6 text-slate-300">
+                    <i class="fas fa-file-contract text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-700 mb-2">Ready to Design</h3>
+                <p class="text-slate-500 max-w-md">Enter your study topic or title on the left to generate structured SMART objectives and scientifically defined variables.</p>
+            </div>
+
+            <!-- Results Container -->
+            <div id="resultsContainer" class="hidden flex-col gap-6">
+                
+                <!-- Objectives Section -->
+                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-bullseye text-success"></i> SMART Objectives
+                        </h2>
+                        <button onclick="copyContent('objectivesList')" class="text-slate-400 hover:text-primary transition-colors" title="Copy Objectives">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <div id="objectivesList" class="flex flex-col gap-4">
+                            <!-- Objectives injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Variables Section -->
+                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-vials text-accent"></i> Defined Variables
+                        </h2>
+                        <button onclick="copyContent('variablesList')" class="text-slate-400 hover:text-primary transition-colors" title="Copy Variables">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <div id="variablesList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Variables injected here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Conceptual Framework Section (Bottom) -->
+                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-project-diagram text-indigo-500"></i> Conceptual Framework
+                        </h2>
+                        <button onclick="copyContent('frameworkContent')" class="text-slate-400 hover:text-primary transition-colors" title="Copy Framework">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                    <div class="p-6" id="frameworkContent">
+                        <!-- Framework injected here -->
+                    </div>
+                    <!-- Download & Lit Review Actions -->
+                    <div class="bg-slate-50 border-t border-slate-200 px-6 py-4 flex flex-wrap justify-end gap-3">
+                        <button onclick="generateLiteratureReview()" id="generateLitReviewBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-sm shadow-sm hidden">
+                            <i class="fas fa-book-reader text-lg"></i> Generate Literature Review
+                        </button>
+                        <button onclick="downloadAsWord()" id="downloadWordBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-sm shadow-sm hidden">
+                            <i class="fas fa-file-word text-lg"></i> Download as Word Document
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Literature Review Section -->
+                <div id="literatureReviewContainer" class="hidden glass-panel rounded-2xl overflow-hidden border border-slate-200">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-book-open text-emerald-600"></i> Literature Review
+                        </h2>
+                        <button onclick="copyContent('literatureReviewContent')" class="text-slate-400 hover:text-primary transition-colors" title="Copy Literature Review">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                    <div class="p-8 lit-review-content text-sm bg-white" id="literatureReviewContent">
+                        <!-- Lit Review injected here -->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-auto py-6 mt-8">
+        <div class="max-w-6xl mx-auto px-4 text-center flex flex-col items-center justify-center gap-1.5">
+            <p class="text-sm text-slate-700 font-bold">&copy; 2026 Atif Amin Baig</p>
+            <p class="text-xs text-slate-500 font-medium">Applied College, University of Tabuk, Tabuk, Kingdom of Saudi Arabia</p>
+        </div>
+    </footer>
+
+    <script>
+        const apiKey = ""; // API Key injected by environment
+        const generateBtn = document.getElementById('generateBtn');
+        const topicInput = document.getElementById('topicInput');
+        const contextInput = document.getElementById('contextInput');
+        const errorMsg = document.getElementById('errorMsg');
+        const emptyState = document.getElementById('emptyState');
+        const loadingState = document.getElementById('loadingState');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const objectivesList = document.getElementById('objectivesList');
+        const variablesList = document.getElementById('variablesList');
+
+        // File upload variables
+        const fileUpload = document.getElementById('dropzone-file');
+        const uploadPrompt = document.getElementById('uploadPrompt');
+        const fileSuccess = document.getElementById('fileSuccess');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        let uploadedLiterature = "";
+        let currentGeneratedData = null;
+        let currentLiteratureReview = null;
+
+        // Exponential Backoff helper
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        
+        async function fetchWithRetry(url, options, maxRetries = 5) {
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(`HTTP error! status: ${response.status}, message: ${JSON.stringify(errorData)}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    if (i === maxRetries - 1) throw error;
+                    await sleep(delays[i]);
+                }
+            }
+        }
+
+        function createPubMedUrl(term) {
+            return `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(term)}`;
+        }
+
+        function createConsensusUrl(term) {
+            return `https://consensus.app/results/?q=${encodeURIComponent(term)}`;
+        }
+
+        function createScienceDirectUrl(term) {
+            return `https://www.sciencedirect.com/search?qs=${encodeURIComponent(term)}`;
+        }
+
+        function createMedlineUrl(term) {
+            // Medline is typically accessed via PubMed, but we can label it explicitly or use an Ovid link if preferred. 
+            // Using PubMed interface as it's the standard free access to Medline.
+            return `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(term)}+AND+medline[sb]`;
+        }
+
+        // Handle File Upload Logic
+        if (fileUpload) {
+            fileUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedLiterature = e.target.result;
+                    
+                    // Truncate to avoid payload size errors (e.g., limit to ~30k characters)
+                    if(uploadedLiterature.length > 30000) {
+                        uploadedLiterature = uploadedLiterature.substring(0, 30000) + "\n... [Truncated for API length limits]";
+                    }
+
+                    uploadPrompt.classList.add('hidden');
+                    fileSuccess.classList.remove('hidden');
+                    fileNameDisplay.textContent = file.name;
+                };
+                reader.readAsText(file);
+            });
+        }
+
+        generateBtn.addEventListener('click', async () => {
+            const topic = topicInput.value.trim();
+            const context = contextInput.value.trim();
+
+            if (!topic) {
+                showError("Please enter a topic or title of study.");
+                return;
+            }
+
+            hideError();
+            showLoading();
+            
+            currentLiteratureReview = null; // Reset literature review for new generation
+            document.getElementById('literatureReviewContainer').classList.add('hidden');
+            document.getElementById('literatureReviewContent').innerHTML = '';
+
+            let literatureAddon = uploadedLiterature ? `\n\nProvided Literature Review Context:\n"""\n${uploadedLiterature}\n"""\n` : "";
+
+            const promptText = `
+                I am designing a scientific study. 
+                Topic/Title: "${topic}"
+                Additional Context: "${context}"${literatureAddon}
+
+                Task 1: Generate 3 to 4 SMART objectives for this study. Break down each into Specific, Measurable, Achievable, Relevant, and Time-bound components. Also provide a supportive reference/rationale and a Perplexity AI search query for each.
+                Task 2: Identify the key variables in these objectives (Independent, Dependent, Confounding/Mediating).
+                Task 3: Define each identified variable exactly as it is defined in current academic consensus and scientific literature (as one would find on PubMed or Consensus AI). Mention standard measurement tools or methods for each.
+                Task 4: Formulate a conceptual framework detailing the relationships between these variables (how IVs affect DVs, and the role of covariates/mediators).
+            `;
+
+            const systemInstruction = "You are an expert academic research assistant, specializing in study design, biostatistics, and epidemiology. Provide highly accurate, scientifically rigorous definitions reflecting current PubMed consensus. Ensure Perplexity queries are highly optimized for literature review.";
+
+            const jsonSchema = {
+                type: "OBJECT",
+                properties: {
+                    objectives: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                statement: { type: "STRING", description: "The full objective statement starting with an action verb." },
+                                specific: { type: "STRING" },
+                                measurable: { type: "STRING" },
+                                achievable: { type: "STRING" },
+                                relevant: { type: "STRING" },
+                                time_bound: { type: "STRING" },
+                                supportive_reference: { type: "STRING", description: "Academic rationale supporting this objective." },
+                                perplexity_query: { type: "STRING", description: "Optimized Perplexity AI search query." }
+                            }
+                        }
+                    },
+                    variables: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                name: { type: "STRING", description: "Name of the variable" },
+                                type: { type: "STRING", description: "e.g., Independent Variable, Dependent Variable, Covariate" },
+                                academic_definition: { type: "STRING", description: "Rigorous definition based on scientific consensus/PubMed" },
+                                measurement_tool: { type: "STRING", description: "How it is standardly measured in studies" },
+                                search_term: { type: "STRING", description: "The best keyword phrase to search this variable on PubMed" }
+                            }
+                        }
+                    },
+                    conceptual_framework: {
+                        type: "OBJECT",
+                        properties: {
+                            narrative: { type: "STRING", description: "Paragraph explaining theoretical relationships." },
+                            visual_map: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        from_variable: { type: "STRING" },
+                                        relationship: { type: "STRING", description: "e.g., influences, moderates, correlates with" },
+                                        to_variable: { type: "STRING" }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const payload = {
+                contents: [{ parts: [{ text: promptText }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+                tools: [{ google_search: {} }], // Use Google Search grounding to mimic Consensus AI / fetch current academic facts
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: jsonSchema,
+                    temperature: 0.2
+                }
+            };
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                
+                const result = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!rawText) throw new Error("Invalid response format from API.");
+
+                const data = JSON.parse(rawText);
+                renderResults(data);
+                
+                // Re-enable the button and change text for the next run
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Start New Project';
+
+            } catch (err) {
+                console.error("API Error:", err);
+                showError("Failed to generate content. Please try again or check your API key environment.");
+                showEmpty();
+            }
+        });
+
+        function renderResults(data) {
+            currentGeneratedData = data;
+            // Render Objectives
+            objectivesList.innerHTML = data.objectives.map((obj, index) => `
+                <div class="p-4 rounded-xl border border-slate-200 bg-white hover:shadow-md transition-shadow">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-slate-100 text-slate-500 font-bold w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
+                            ${index + 1}
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="text-slate-800 font-semibold mb-3 text-sm lg:text-base">${obj.statement}</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mt-2 text-xs mb-4">
+                                <div class="bg-blue-50/50 p-2 rounded border border-blue-100">
+                                    <span class="smart-letter bg-s">S</span> <span class="text-slate-600">${obj.specific}</span>
+                                </div>
+                                <div class="bg-emerald-50/50 p-2 rounded border border-emerald-100">
+                                    <span class="smart-letter bg-m">M</span> <span class="text-slate-600">${obj.measurable}</span>
+                                </div>
+                                <div class="bg-amber-50/50 p-2 rounded border border-amber-100">
+                                    <span class="smart-letter bg-a">A</span> <span class="text-slate-600">${obj.achievable}</span>
+                                </div>
+                                <div class="bg-purple-50/50 p-2 rounded border border-purple-100">
+                                    <span class="smart-letter bg-r">R</span> <span class="text-slate-600">${obj.relevant}</span>
+                                </div>
+                                <div class="bg-red-50/50 p-2 rounded border border-red-100">
+                                    <span class="smart-letter bg-t">T</span> <span class="text-slate-600">${obj.time_bound}</span>
+                                </div>
+                            </div>
+                            <div class="pt-3 border-t border-slate-100 bg-slate-50 -mx-4 -mb-4 p-4 rounded-b-xl flex flex-col gap-3">
+                                <p class="text-xs text-slate-600 font-medium leading-relaxed">
+                                    <i class="fas fa-quote-left text-slate-300 mr-1"></i> ${obj.supportive_reference}
+                                </p>
+                                <div>
+                                    <a href="https://www.perplexity.ai/search?q=${encodeURIComponent(obj.perplexity_query)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-[11px] font-bold bg-slate-800 text-white px-3 py-1.5 rounded hover:bg-slate-700 transition-colors shadow-sm">
+                                        <i class="fas fa-search"></i> Ask Perplexity AI
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Variables
+            variablesList.innerHTML = data.variables.map(v => `
+                <div class="p-5 rounded-xl border border-slate-200 bg-white flex flex-col h-full hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-bold text-slate-800 text-sm lg:text-base">${v.name}</h4>
+                        <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                            ${v.type}
+                        </span>
+                    </div>
+                    <div class="text-xs text-slate-600 mb-4 flex-grow flex flex-col gap-2">
+                        <p><strong><i class="fas fa-book-medical text-slate-400"></i> Consensus Definition:</strong> ${v.academic_definition}</p>
+                        <p><strong><i class="fas fa-ruler text-slate-400"></i> Standard Measurement:</strong> ${v.measurement_tool}</p>
+                    </div>
+                    <div class="mt-auto pt-3 border-t border-slate-100 flex gap-2">
+                        <a href="${createPubMedUrl(v.search_term)}" target="_blank" rel="noopener noreferrer" class="flex-1 text-center text-[11px] font-semibold py-1.5 px-3 rounded bg-pubmed/10 text-pubmed hover:bg-pubmed hover:text-white transition-colors flex items-center justify-center gap-1">
+                            <i class="fas fa-external-link-alt"></i> PubMed
+                        </a>
+                        <a href="${createConsensusUrl(v.search_term)}" target="_blank" rel="noopener noreferrer" class="flex-1 text-center text-[11px] font-semibold py-1.5 px-3 rounded bg-consensus/10 text-consensus hover:bg-consensus hover:text-white transition-colors flex items-center justify-center gap-1">
+                            <i class="fas fa-search"></i> Consensus AI
+                        </a>
+                    </div>
+                    <div class="mt-2 flex gap-2">
+                        <a href="${createScienceDirectUrl(v.search_term)}" target="_blank" rel="noopener noreferrer" class="flex-1 text-center text-[11px] font-semibold py-1.5 px-3 rounded bg-orange-100 text-orange-700 hover:bg-orange-600 hover:text-white transition-colors flex items-center justify-center gap-1">
+                            <i class="fas fa-book-open"></i> ScienceDirect
+                        </a>
+                        <a href="${createMedlineUrl(v.search_term)}" target="_blank" rel="noopener noreferrer" class="flex-1 text-center text-[11px] font-semibold py-1.5 px-3 rounded bg-blue-100 text-blue-700 hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-center gap-1">
+                            <i class="fas fa-notes-medical"></i> Medline
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Conceptual Framework
+            const fw = data.conceptual_framework;
+            const frameworkContent = document.getElementById('frameworkContent');
+            
+            if (fw) {
+                let fwHTML = `<p class="text-sm text-slate-600 mb-6 leading-relaxed p-4 bg-indigo-50 border border-indigo-100 rounded-xl">${fw.narrative}</p>`;
+                
+                if (fw.visual_map && fw.visual_map.length > 0) {
+                    fwHTML += `<div class="flex flex-col gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl">`;
+                    fw.visual_map.forEach(path => {
+                        fwHTML += `
+                            <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 w-full">
+                                <div class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 shadow-sm w-full sm:w-1/3 text-center">${path.from_variable}</div>
+                                <div class="flex flex-col items-center w-full sm:w-1/3 py-2 sm:py-0">
+                                    <span class="text-[10px] uppercase tracking-wider text-indigo-600 font-bold mb-1">${path.relationship}</span>
+                                    <div class="w-full h-px bg-indigo-200 relative hidden sm:block">
+                                        <i class="fas fa-caret-right text-indigo-400 absolute -right-1 -top-[7px]"></i>
+                                    </div>
+                                    <i class="fas fa-arrow-down text-indigo-300 block sm:hidden"></i>
+                                </div>
+                                <div class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 shadow-sm w-full sm:w-1/3 text-center">${path.to_variable}</div>
+                            </div>
+                        `;
+                    });
+                    fwHTML += `</div>`;
+                }
+                frameworkContent.innerHTML = fwHTML;
+            } else {
+                frameworkContent.innerHTML = '<p class="text-sm text-slate-500">No framework data available.</p>';
+            }
+
+            document.getElementById('downloadWordBtn').classList.remove('hidden');
+            document.getElementById('generateLitReviewBtn').classList.remove('hidden');
+
+            loadingState.classList.add('hidden');
+            emptyState.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            resultsContainer.classList.add('flex');
+        }
+
+        function showLoading() {
+            emptyState.classList.add('hidden');
+            resultsContainer.classList.add('hidden');
+            resultsContainer.classList.remove('flex');
+            loadingState.classList.remove('hidden');
+            loadingState.classList.add('flex');
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            document.getElementById('downloadWordBtn').classList.add('hidden');
+            document.getElementById('generateLitReviewBtn').classList.add('hidden');
+        }
+
+        function showEmpty() {
+            loadingState.classList.add('hidden');
+            loadingState.classList.remove('flex');
+            resultsContainer.classList.add('hidden');
+            resultsContainer.classList.remove('flex');
+            emptyState.classList.remove('hidden');
+            emptyState.classList.add('flex');
+            document.getElementById('downloadWordBtn').classList.add('hidden');
+            document.getElementById('generateLitReviewBtn').classList.add('hidden');
+            resetButton();
+        }
+
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.classList.remove('hidden');
+            resetButton();
+        }
+
+        function hideError() {
+            errorMsg.classList.add('hidden');
+        }
+
+        function resetButton() {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Design';
+        }
+
+        function copyContent(containerId) {
+            const container = document.getElementById(containerId);
+            const textToCopy = container.innerText;
+            
+            // Fallback for iframe restrictions
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                // Temporary visual feedback
+                const btn = container.parentElement.querySelector('button');
+                const oldHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check text-success"></i>';
+                setTimeout(() => btn.innerHTML = oldHTML, 2000);
+            } catch (err) {
+                console.error('Copy failed', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        async function generateLiteratureReview() {
+            if (!currentGeneratedData || !currentGeneratedData.objectives) return;
+            
+            const litBtn = document.getElementById('generateLitReviewBtn');
+            const litContainer = document.getElementById('literatureReviewContainer');
+            const litContent = document.getElementById('literatureReviewContent');
+
+            litBtn.disabled = true;
+            litBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-lg"></i> Generating Review...';
+
+            const objectivesText = currentGeneratedData.objectives.map((o, i) => `${i+1}. ${o.statement}`).join('\n');
+            const topic = document.getElementById('topicInput').value.trim();
+            
+            const promptText = `
+                Topic: "${topic}"
+                
+                Based on the following research objectives for the topic above:
+                ${objectivesText}
+
+                Task: Write a comprehensive, highly academic literature review.
+                
+                Requirements:
+                1. Synthesize current scientific literature related to these specific objectives.
+                2. Use bracketed in-text citations (e.g., [1], [2]) throughout the text for every factual claim.
+                3. Include a "References" list at the very end matching the in-text citations with real, verified references (author, title, journal/source, year).
+                4. Format the output in clean, semantic HTML (using <h3> for section headers, <p> for paragraphs, <ul>/<li> for lists, <strong> for emphasis). Do NOT use Markdown (like **bold** or # headings), ONLY HTML tags.
+            `;
+
+            const systemInstruction = "You are an expert academic researcher. Provide accurate, search-grounded literature reviews based on current, verified scientific literature. Use formal academic tone. Output strictly valid JSON.";
+
+            const jsonSchema = {
+                type: "OBJECT",
+                properties: {
+                    literature_review_html: { type: "STRING", description: "The complete literature review text fully formatted in HTML tags." }
+                }
+            };
+
+            const payload = {
+                contents: [{ parts: [{ text: promptText }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+                tools: [{ google_search: {} }], // Grounding for real citations
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: jsonSchema,
+                    temperature: 0.3
+                }
+            };
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                const result = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!rawText) throw new Error("Invalid response format from API.");
+
+                const data = JSON.parse(rawText);
+                currentLiteratureReview = data.literature_review_html;
+                
+                litContent.innerHTML = currentLiteratureReview;
+                litContainer.classList.remove('hidden');
+
+                // Briefly show success state, then revert button text
+                litBtn.innerHTML = '<i class="fas fa-check-circle text-lg"></i> Review Generated';
+                litBtn.classList.replace('bg-emerald-600', 'bg-green-600');
+                
+                setTimeout(() => {
+                    litBtn.disabled = false;
+                    litBtn.innerHTML = '<i class="fas fa-sync-alt text-lg"></i> Regenerate Review';
+                    litBtn.classList.replace('bg-green-600', 'bg-emerald-600');
+                }, 3000);
+
+            } catch (err) {
+                console.error("Lit Review Error:", err);
+                litBtn.innerHTML = '<i class="fas fa-exclamation-triangle text-lg"></i> Failed. Try Again';
+                litBtn.disabled = false;
+            }
+        }
+
+        function downloadAsWord() {
+            if (!currentGeneratedData) return;
+
+            // Generate HTML formatted specifically for MS Word compatibility
+            let content = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>Research Objectives</title></head>
+                <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                    <h1 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">Research Objectives & Framework</h1>
+                    <p><strong>Topic:</strong> ${document.getElementById('topicInput').value || 'Provided Study Topic'}</p>
+                    <br>
+                    
+                    <h2 style="color: #10b981;">1. SMART Objectives</h2>
+            `;
+            
+            currentGeneratedData.objectives.forEach((obj, i) => {
+                content += `
+                    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e5e7eb; border-radius: 8px;">
+                        <h3 style="margin-top: 0; color: #1e293b;">Objective ${i + 1}</h3>
+                        <p><strong>Statement:</strong> ${obj.statement}</p>
+                        <ul style="list-style-type: square;">
+                            <li><strong>Specific:</strong> ${obj.specific}</li>
+                            <li><strong>Measurable:</strong> ${obj.measurable}</li>
+                            <li><strong>Achievable:</strong> ${obj.achievable}</li>
+                            <li><strong>Relevant:</strong> ${obj.relevant}</li>
+                            <li><strong>Time-bound:</strong> ${obj.time_bound}</li>
+                        </ul>
+                        <p><em><strong>Supportive Reference:</strong> ${obj.supportive_reference}</em></p>
+                        <p><strong>Perplexity Query:</strong> <a href="https://www.perplexity.ai/search?q=${encodeURIComponent(obj.perplexity_query)}">${obj.perplexity_query}</a></p>
+                    </div>
+                `;
+            });
+
+            content += `
+                    <br>
+                    <h2 style="color: #0ea5e9;">2. Defined Variables</h2>
+            `;
+
+            currentGeneratedData.variables.forEach(v => {
+                content += `
+                    <div style="margin-bottom: 15px;">
+                        <h3 style="margin-bottom: 5px; color: #1e293b;">${v.name} <span style="font-size: 0.8em; color: #64748b;">(${v.type})</span></h3>
+                        <p style="margin-top: 0;"><strong>Definition:</strong> ${v.academic_definition}</p>
+                        <p style="margin-top: 0;"><strong>Measurement Tool:</strong> ${v.measurement_tool}</p>
+                        <p style="margin-top: 0;"><strong>PubMed Search Term:</strong> ${v.search_term}</p>
+                    </div>
+                `;
+            });
+
+            if (currentGeneratedData.conceptual_framework) {
+                content += `
+                    <br>
+                    <h2 style="color: #6366f1;">3. Conceptual Framework</h2>
+                    <p>${currentGeneratedData.conceptual_framework.narrative}</p>
+                `;
+                
+                if(currentGeneratedData.conceptual_framework.visual_map && currentGeneratedData.conceptual_framework.visual_map.length > 0) {
+                    content += `
+                        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; border-color: #cbd5e1; margin-top: 15px;">
+                            <tr style="background-color: #f8fafc;">
+                                <th style="text-align: left; color: #334155;">From Variable</th>
+                                <th style="text-align: left; color: #334155;">Relationship</th>
+                                <th style="text-align: left; color: #334155;">To Variable</th>
+                            </tr>
+                    `;
+                    currentGeneratedData.conceptual_framework.visual_map.forEach(path => {
+                        content += `
+                            <tr>
+                                <td style="font-weight: bold;">${path.from_variable}</td>
+                                <td><em>${path.relationship}</em></td>
+                                <td style="font-weight: bold;">${path.to_variable}</td>
+                            </tr>
+                        `;
+                    });
+                    content += `</table>`;
+                }
+            }
+
+            if (currentLiteratureReview) {
+                content += `
+                    <br><br>
+                    <h2 style="color: #059669; border-bottom: 2px solid #059669; padding-bottom: 10px;">4. Literature Review</h2>
+                    <div style="text-align: justify;">
+                        ${currentLiteratureReview}
+                    </div>
+                `;
+            }
+
+            content += `</body></html>`;
+
+            // Create blob with MS Word application type
+            const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'Research_Objectives_Framework.doc';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
