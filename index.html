@@ -29,7 +29,7 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .glass-panel {
             background: rgba(255, 255, 255, 0.9);
@@ -73,7 +73,6 @@
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
 
-    <!-- Header -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -86,29 +85,51 @@
                 </div>
             </div>
             <div class="flex items-center gap-2 text-sm font-medium text-slate-500 hidden sm:flex">
-                Powered by <span class="text-primary font-bold"><i class="fas fa-bolt text-yellow-400"></i> Gemini 2.5 Flash</span>
+                Powered by <span class="text-primary font-bold"><i class="fas fa-bolt text-yellow-400"></i> Gemini AI</span>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-grow max-w-6xl mx-auto w-full px-4 py-8 flex flex-col lg:flex-row gap-8">
         
         <!-- Input Section (Left) -->
         <div class="w-full lg:w-1/3 flex flex-col gap-6">
             
-            <!-- API Key Configuration -->
+            <!-- API Key & Model Configuration -->
             <div class="glass-panel rounded-2xl p-6 relative overflow-hidden border border-amber-200 bg-amber-50/30">
                 <h2 class="text-sm font-bold mb-3 flex items-center gap-2 text-slate-700">
                     <i class="fas fa-key text-amber-500"></i> API Configuration
                 </h2>
-                <div>
-                    <label for="apiKeyInput" class="block text-xs font-semibold text-slate-600 mb-1">Gemini API Key *</label>
-                    <input type="password" id="apiKeyInput" class="w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm placeholder-slate-400" placeholder="Paste your Google Gemini API key here...">
-                    <p class="text-[10px] text-slate-500 mt-2">Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-primary hover:underline font-bold">Google AI Studio</a>. Saved securely in your browser.</p>
+                <div class="flex flex-col gap-3">
+                    <div>
+                        <label for="apiKeyInput" class="block text-xs font-semibold text-slate-600 mb-1">Gemini API Key *</label>
+                        <input type="password" id="apiKeyInput" class="w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm placeholder-slate-400" placeholder="Paste your Google Gemini API key here...">
+                        <!-- Real-time key validation notification -->
+                        <div id="apiKeyWarning" class="hidden mt-1 text-[10px] text-amber-600 font-semibold flex items-center gap-1">
+                            <i class="fas fa-exclamation-triangle"></i> Key structure looks unusual (should start with AIzaSy or AQ.).
+                        </div>
+                    </div>
+                    <div>
+                        <label for="modelSelect" class="block text-xs font-semibold text-slate-600 mb-1">Select Engine Model</label>
+                        <select id="modelSelect" class="w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-sm">
+                            <option value="gemini-3.5-flash" selected>Gemini 3.5 Flash (Highly Recommended - Default)</option>
+                            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite (Ultra-Fast / High Quota)</option>
+                        </select>
+                    </div>
+                    <p class="text-[10px] text-slate-500">Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-primary hover:underline font-bold">Google AI Studio</a>. Saved securely in your browser.</p>
                 </div>
             </div>
 
+            <!-- Notification Toast / Rate Banner -->
+            <div id="rateLimitAlert" class="hidden p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-xs flex flex-col gap-1 shadow-sm">
+                <div class="flex items-center gap-2 font-bold">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Quota Limit Warning!</span>
+                </div>
+                <p id="rateLimitMessage">Your selected engine quota is exhausted. Retrying with alternative backup model...</p>
+            </div>
+
+            <!-- Study Details Form -->
             <div class="glass-panel rounded-2xl p-6 relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-accent"></div>
                 <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
@@ -130,7 +151,7 @@
                         <i class="fas fa-magic"></i> Generate Design
                     </button>
                     
-                    <div id="errorMsg" class="hidden mt-2 p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-200"></div>
+                    <div id="errorMsg" class="hidden mt-2 p-3 bg-red-50 text-red-600 text-xs rounded-lg border border-red-200 flex flex-col gap-1.5 break-words"></div>
                 </div>
             </div>
 
@@ -171,7 +192,7 @@
                     <i class="fas fa-brain absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-primary text-xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 mb-2" id="loadingTitle">Analyzing Academic Context...</h3>
-                <p class="text-sm text-slate-500 max-w-xs loading-pulse" id="loadingDesc">Consulting scientific literature, extracting variables, and drafting SMART objectives using Gemini 2.5 Flash.</p>
+                <p class="text-sm text-slate-500 max-w-xs loading-pulse" id="loadingDesc">Consulting scientific literature, extracting variables, and drafting SMART objectives using Gemini.</p>
             </div>
 
             <!-- Empty State -->
@@ -326,6 +347,10 @@
         const fileSuccess = document.getElementById('fileSuccess');
         const fileNameDisplay = document.getElementById('fileNameDisplay');
         const apiKeyInput = document.getElementById('apiKeyInput');
+        const apiKeyWarning = document.getElementById('apiKeyWarning');
+        const modelSelect = document.getElementById('modelSelect');
+        const rateLimitAlert = document.getElementById('rateLimitAlert');
+        const rateLimitMessage = document.getElementById('rateLimitMessage');
         
         // App State
         let uploadedLiterature = "";
@@ -333,13 +358,44 @@
         let currentLiteratureReview = null;
         let currentMethodology = null;
         let currentFlowchartData = null;
-        // API Key Management
+
+        // API Configuration Persistence and Migration
         if (localStorage.getItem('geminiApiKey')) {
-            apiKeyInput.value = localStorage.getItem('geminiApiKey');
+            const savedKey = localStorage.getItem('geminiApiKey');
+            apiKeyInput.value = savedKey;
+            checkKeyFormat(savedKey);
         }
+        if (localStorage.getItem('geminiPreferredModel')) {
+            const savedModel = localStorage.getItem('geminiPreferredModel');
+            if (['gemini-3.5-flash', 'gemini-3.1-flash-lite'].includes(savedModel)) {
+                modelSelect.value = savedModel;
+            } else {
+                modelSelect.value = 'gemini-3.5-flash';
+                localStorage.setItem('geminiPreferredModel', 'gemini-3.5-flash');
+            }
+        } else {
+            modelSelect.value = 'gemini-3.5-flash';
+            localStorage.setItem('geminiPreferredModel', 'gemini-3.5-flash');
+        }
+
         apiKeyInput.addEventListener('input', (e) => {
-            localStorage.setItem('geminiApiKey', e.target.value.trim());
+            const val = e.target.value.trim();
+            localStorage.setItem('geminiApiKey', val);
+            checkKeyFormat(val);
         });
+        
+        modelSelect.addEventListener('change', (e) => {
+            localStorage.setItem('geminiPreferredModel', e.target.value);
+        });
+
+        // Function to verify key looks standard but doesn't hard-block execution
+        function checkKeyFormat(key) {
+            if (key && !key.startsWith('AIzaSy') && !key.startsWith('AQ.')) {
+                apiKeyWarning.classList.remove('hidden');
+            } else {
+                apiKeyWarning.classList.add('hidden');
+            }
+        }
 
         // File Upload Handling
         fileUpload.addEventListener('change', (e) => {
@@ -356,24 +412,110 @@
             reader.readAsText(file);
         });
 
-        // Exponential Backoff helper for robust API calls
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         
-        async function fetchWithRetry(url, options, maxRetries = 5) {
-            const delays = [1000, 2000, 4000, 8000, 16000];
+        // Lenient verification logic allows any reasonably long API key format to execute
+        function isValidGeminiKeyFormat(key) {
+            return typeof key === 'string' && key.trim().length >= 15;
+        }
+
+        async function fetchWithRetry(promptPayload, systemInstruction, responseSchema, maxRetries = 4) {
+            const apiKey = apiKeyInput.value.trim();
+            
+            if (!apiKey) {
+                throw new Error("API_KEY_MISSING: Please enter your Gemini API Key in the configuration panel.");
+            }
+            if (!isValidGeminiKeyFormat(apiKey)) {
+                throw new Error("API_KEY_FORMAT_INVALID: The key entered seems too short to be a valid API key. Please check your credentials.");
+            }
+
+            let chosenModel = modelSelect.value;
+            const delays = [1000, 2000, 4000, 8000];
+
             for (let i = 0; i < maxRetries; i++) {
+                let url = `https://generativelanguage.googleapis.com/v1beta/models/${chosenModel}:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: promptPayload }] }],
+                    systemInstruction: { parts: [{ text: systemInstruction }] },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: responseSchema,
+                        temperature: 0.2
+                    }
+                };
+
                 try {
-                    const response = await fetch(url, options);
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 400) {
+                        const errorData = await response.json().catch(() => ({}));
+                        const errMsg = errorData.error?.message || "";
+                        if (errMsg.includes("API key not valid") || errorData.error?.status === "INVALID_ARGUMENT") {
+                            throw new Error("API_KEY_REJECTED: Google rejected this API key as invalid. Please double-check that you copied the complete key correctly from Google AI Studio.");
+                        }
+                        throw new Error(`Google API Error (HTTP 400): ${errMsg || "Bad Request"}`);
+                    }
+
+                    if (response.status === 404) {
+                        const errorData = await response.json().catch(() => ({}));
+                        const errMsg = errorData.error?.message || "";
+                        throw new Error(`Google API Error (HTTP 404): ${errMsg || "Not Found. The selected model may be unsupported or unavailable. Try selecting 'Gemini 3.5 Flash'."}`);
+                    }
+
+                    if (response.status === 429) {
+                        const errorData = await response.json().catch(() => ({}));
+                        const errMsg = errorData.error?.message || "";
+                        
+                        if (chosenModel === 'gemini-3.5-flash') {
+                            showRateLimitWarning("Selected engine quota exhausted. Downgrading automatically to high-quota Gemini 3.1 Flash-Lite backup engine...");
+                            chosenModel = 'gemini-3.1-flash-lite';
+                            modelSelect.value = 'gemini-3.1-flash-lite';
+                            localStorage.setItem('geminiPreferredModel', 'gemini-3.1-flash-lite');
+                            await sleep(1500);
+                            continue;
+                        }
+                        
+                        let delaySec = 30;
+                        if (errMsg.includes("Please retry in")) {
+                            const match = errMsg.match(/retry in ([\d\.]+)/);
+                            if (match && match[1]) delaySec = Math.ceil(parseFloat(match[1]));
+                        }
+                        
+                        showRateLimitWarning(`Rate limit encountered. Pausing for ${delaySec}s before automatic retry attempt ${i + 1}/${maxRetries}...`);
+                        await sleep(delaySec * 1000);
+                        continue; 
+                    }
+
                     if (!response.ok) {
                         const errorData = await response.json().catch(() => ({}));
-                        throw new Error(`HTTP error! status: ${response.status}, message: ${JSON.stringify(errorData)}`);
+                        const errMsg = errorData.error?.message || "";
+                        throw new Error(`Google API Error (HTTP ${response.status}): ${errMsg || "Unknown Server Error"}`);
                     }
+
+                    hideRateLimitWarning();
                     return await response.json();
+
                 } catch (error) {
+                    if (error.message.startsWith("API_KEY_") || error.message.includes("rejected this API key")) {
+                        throw error;
+                    }
                     if (i === maxRetries - 1) throw error;
                     await sleep(delays[i]);
                 }
             }
+        }
+
+        function showRateLimitWarning(message) {
+            rateLimitMessage.textContent = message;
+            rateLimitAlert.classList.remove('hidden');
+        }
+
+        function hideRateLimitWarning() {
+            rateLimitAlert.classList.add('hidden');
         }
 
         // Link Generators
@@ -386,7 +528,11 @@
         generateBtn.addEventListener('click', async () => {
             const apiKey = apiKeyInput.value.trim();
             if (!apiKey) {
-                showError("Please enter your Gemini API Key in the API Configuration panel above.");
+                showError("<strong>API Key Missing:</strong> Please enter your Google Gemini API Key in the configuration panel above to run this application.");
+                return;
+            }
+            if (!isValidGeminiKeyFormat(apiKey)) {
+                showError("<strong>Invalid API Key Format:</strong> The entered key is too short. Please provide a valid key from Google AI Studio.");
                 return;
             }
 
@@ -399,6 +545,7 @@
             }
 
             hideError();
+            hideRateLimitWarning();
             showLoading("Analyzing Academic Context...", "Consulting scientific literature, extracting variables, and drafting SMART objectives.");
             
             // Reset generated secondary docs
@@ -443,7 +590,8 @@
                                 time_bound: { type: "STRING" },
                                 supportive_reference: { type: "STRING", description: "A theoretical rationale or citation context." },
                                 perplexity_query: { type: "STRING", description: "A search phrase to find literature for this objective." }
-                            }
+                            },
+                            required: ["statement", "specific", "measurable", "achievable", "relevant", "time_bound", "supportive_reference", "perplexity_query"]
                         }
                     },
                     variables: {
@@ -456,7 +604,8 @@
                                 academic_definition: { type: "STRING" },
                                 measurement_tool: { type: "STRING" },
                                 search_term: { type: "STRING" }
-                            }
+                            },
+                            required: ["name", "type", "academic_definition", "measurement_tool", "search_term"]
                         }
                     },
                     conceptual_framework: {
@@ -471,42 +620,40 @@
                                         from_variable: { type: "STRING" },
                                         relationship: { type: "STRING", description: "e.g., influences, moderates, confounds" },
                                         to_variable: { type: "STRING" }
-                                    }
+                                    },
+                                    required: ["from_variable", "relationship", "to_variable"]
                                 }
                             }
-                        }
+                        },
+                        required: ["narrative", "visual_map"]
                     }
-                }
-            };
-
-            const payload = {
-                contents: [{ parts: [{ text: promptText }] }],
-                systemInstruction: { parts: [{ text: systemInstruction }] },
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: jsonSchema,
-                    temperature: 0.2
-                }
+                },
+                required: ["objectives", "variables", "conceptual_framework"]
             };
 
             try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-                
-                const result = await fetchWithRetry(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
+                const result = await fetchWithRetry(promptText, systemInstruction, jsonSchema);
                 const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (!rawText) throw new Error("Invalid response format from API.");
+                if (!rawText) throw new Error("Invalid response format received from Gemini.");
 
                 const data = JSON.parse(rawText);
                 renderResults(data);
 
             } catch (err) {
-                console.error("API Error:", err);
-                showError("Failed to generate content. Please check your API key environment or network connection.");
+                console.error("API Error Details:", err);
+                
+                let userFriendlyMessage = "An unexpected error occurred. Please try again.";
+                if (err.message.includes("API_KEY_REJECTED")) {
+                    userFriendlyMessage = `<strong>Google API Key Rejected:</strong> Google reports this key is invalid. <br><br>Please verify your key in Google AI Studio, ensure it has permissions for the Generative Language API, and copy it again without extra spaces.`;
+                } else if (err.message.includes("API_KEY_FORMAT_INVALID")) {
+                    userFriendlyMessage = `<strong>Invalid API Key Format:</strong> The key format is too short. Please review your input.`;
+                } else if (err.message.includes("HTTP 429") || err.message.includes("quota")) {
+                    userFriendlyMessage = `<strong>Rate Limit Exceeded:</strong> You have hit the Google Gemini Free Tier usage limitations. Please wait a minute before requesting again.`;
+                } else if (err.message) {
+                    userFriendlyMessage = `<strong>Generation Error:</strong> ${err.message}`;
+                }
+                
+                showError(userFriendlyMessage);
                 showEmpty();
             }
         });
@@ -515,24 +662,31 @@
             currentGeneratedData = data;
             
             // Render Objectives
-            objectivesList.innerHTML = data.objectives.map((obj, index) => `
+            objectivesList.innerHTML = data.objectives.map((obj, index) => {
+                const sVal = obj.specific || obj.S || obj.Specific || "No description provided.";
+                const mVal = obj.measurable || obj.M || obj.Measurable || "No description provided.";
+                const aVal = obj.achievable || obj.A || obj.Achievable || "No description provided.";
+                const rVal = obj.relevant || obj.R || obj.Relevant || "No description provided.";
+                const tVal = obj.time_bound || obj.T || obj.TimeBound || obj.time_bound || "No description provided.";
+
+                return `
                 <div class="p-4 rounded-xl border border-slate-200 bg-white hover:shadow-md transition-shadow">
                     <div class="flex items-start gap-3">
                         <div class="bg-slate-100 text-slate-500 font-bold w-8 h-8 rounded-lg flex items-center justify-center shrink-0">${index + 1}</div>
                         <div class="flex-grow">
                             <h4 class="text-slate-800 font-semibold mb-3 text-sm lg:text-base">${obj.statement}</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 mt-2 text-xs">
-                                <div class="bg-blue-50/50 p-2 rounded border border-blue-100"><span class="smart-letter bg-s">S</span> <span class="text-slate-600">${obj.specific}</span></div>
-                                <div class="bg-emerald-50/50 p-2 rounded border border-emerald-100"><span class="smart-letter bg-m">M</span> <span class="text-slate-600">${obj.measurable}</span></div>
-                                <div class="bg-amber-50/50 p-2 rounded border border-amber-100"><span class="smart-letter bg-a">A</span> <span class="text-slate-600">${obj.achievable}</span></div>
-                                <div class="bg-purple-50/50 p-2 rounded border border-purple-100"><span class="smart-letter bg-r">R</span> <span class="text-slate-600">${obj.relevant}</span></div>
-                                <div class="bg-red-50/50 p-2 rounded border border-red-100"><span class="smart-letter bg-t">T</span> <span class="text-slate-600">${obj.time_bound}</span></div>
+                                <div class="bg-blue-50/50 p-2 rounded border border-blue-100"><span class="smart-letter bg-s">S</span> <span class="text-slate-600">${sVal}</span></div>
+                                <div class="bg-emerald-50/50 p-2 rounded border border-emerald-100"><span class="smart-letter bg-m">M</span> <span class="text-slate-600">${mVal}</span></div>
+                                <div class="bg-amber-50/50 p-2 rounded border border-amber-100"><span class="smart-letter bg-a">A</span> <span class="text-slate-600">${aVal}</span></div>
+                                <div class="bg-purple-50/50 p-2 rounded border border-purple-100"><span class="smart-letter bg-r">R</span> <span class="text-slate-600">${rVal}</span></div>
+                                <div class="bg-red-50/50 p-2 rounded border border-red-100"><span class="smart-letter bg-t">T</span> <span class="text-slate-600">${tVal}</span></div>
                             </div>
                             <div class="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                 <div class="text-xs text-slate-600 flex-grow">
-                                    <strong><i class="fas fa-quote-left text-slate-300 mr-1"></i> Rationale/Support:</strong> ${obj.supportive_reference}
+                                    <strong><i class="fas fa-quote-left text-slate-300 mr-1"></i> Rationale/Support:</strong> ${obj.supportive_reference || 'N/A'}
                                 </div>
-                                <a href="${createPerplexityUrl(obj.perplexity_query)}" target="_blank" class="shrink-0 bg-[#222222] hover:bg-black text-white text-xs font-semibold py-1.5 px-3 rounded-lg flex items-center gap-1.5 transition-colors">
+                                <a href="${createPerplexityUrl(obj.perplexity_query || obj.statement)}" target="_blank" class="shrink-0 bg-[#222222] hover:bg-black text-white text-xs font-semibold py-1.5 px-3 rounded-lg flex items-center gap-1.5 transition-colors">
                                     <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     Verify on Perplexity
                                 </a>
@@ -540,7 +694,8 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
 
             // Render Variables
             variablesList.innerHTML = data.variables.map(v => `
@@ -562,29 +717,42 @@
                 </div>
             `).join('');
 
-            // Render Framework
+            // Render Framework (Grid mapping Table beside SVG Diagram)
             if (data.conceptual_framework) {
-                let fwHTML = `<p class="text-sm text-slate-600 mb-4 leading-relaxed">${data.conceptual_framework.narrative}</p>`;
-                if (data.conceptual_framework.visual_map && data.conceptual_framework.visual_map.length > 0) {
-                    fwHTML += `
+                let fwHTML = `<p class="text-sm text-slate-600 mb-6 leading-relaxed">${data.conceptual_framework.narrative}</p>`;
+                
+                fwHTML += `
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <!-- Diagram Side -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center justify-center relative min-h-[350px]">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 self-start"><i class="fas fa-project-diagram mr-1"></i> Visual Relationship Map</h3>
+                        <div id="frameworkDiagramContainer" class="w-full h-full min-h-[300px] flex items-center justify-center"></div>
+                    </div>
+                    <!-- Table Side -->
                     <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
                         <table class="w-full text-sm text-left">
                             <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b border-slate-200">
                                 <tr><th class="px-4 py-3">From Variable</th><th class="px-4 py-3 text-center">Relationship</th><th class="px-4 py-3 text-right">To Variable</th></tr>
                             </thead>
                             <tbody>
-                                ${data.conceptual_framework.visual_map.map(path => `
+                                ${data.conceptual_framework.visual_map && data.conceptual_framework.visual_map.length > 0 ? 
+                                    data.conceptual_framework.visual_map.map(path => `
                                     <tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50">
                                         <td class="px-4 py-3 font-semibold text-slate-700">${path.from_variable}</td>
-                                        <td class="px-4 py-3 text-center text-slate-400 text-xs"><span class="bg-slate-100 px-2 py-1 rounded-full">${path.relationship}</span></td>
+                                        <td class="px-4 py-3 text-center text-slate-400 text-xs"><span class="bg-slate-100 px-2 py-1 rounded-full font-medium text-slate-600">${path.relationship}</span></td>
                                         <td class="px-4 py-3 font-semibold text-slate-700 text-right">${path.to_variable}</td>
                                     </tr>
-                                `).join('')}
+                                    `).join('') : '<tr><td colspan="3" class="p-4 text-center text-slate-400">No pathways specified.</td></tr>'
+                                }
                             </tbody>
                         </table>
-                    </div>`;
-                }
+                    </div>
+                </div>`;
+                
                 frameworkContent.innerHTML = fwHTML;
+                
+                // Draw the SVG diagram
+                drawFrameworkDiagram(data);
             }
 
             document.getElementById('downloadWordBtn').classList.remove('hidden');
@@ -602,9 +770,225 @@
             generateBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Start New Project';
         }
 
+        // Dynamic SVG Conceptual Framework Diagram Builder
+        function drawFrameworkDiagram(data) {
+            const container = document.getElementById('frameworkDiagramContainer');
+            if (!container) return;
+
+            const variables = data.variables || [];
+            const visualMap = (data.conceptual_framework && data.conceptual_framework.visual_map) || [];
+
+            // Gather all nodes in relationship map
+            const nodeSet = new Set();
+            visualMap.forEach(link => {
+                if (link.from_variable) nodeSet.add(link.from_variable.trim());
+                if (link.to_variable) nodeSet.add(link.to_variable.trim());
+            });
+            
+            // Fallback: If map is empty, pull standard variables
+            if (nodeSet.size === 0) {
+                variables.forEach(v => nodeSet.add(v.name.trim()));
+            }
+
+            const nodeNames = Array.from(nodeSet);
+
+            // Group nodes into three structural columns for alignment (Left, Middle, Right)
+            const colLeft = [];
+            const colMiddle = [];
+            const colRight = [];
+
+            nodeNames.forEach(name => {
+                const vMatch = variables.find(v => v.name.toLowerCase().trim() === name.toLowerCase().trim());
+                const type = vMatch ? vMatch.type.toLowerCase() : 'confounding';
+
+                if (type.includes('independent') || type.includes('exposure') || type.includes('predictor') || type.includes('cause')) {
+                    colLeft.push(name);
+                } else if (type.includes('dependent') || type.includes('outcome') || type.includes('effect')) {
+                    colRight.push(name);
+                } else {
+                    colMiddle.push(name);
+                }
+            });
+
+            // Adjust layout if one tier is empty
+            if (colLeft.length === 0 && nodeNames.length > 0) colLeft.push(nodeNames[0]);
+            if (colRight.length === 0 && nodeNames.length > 1) colRight.push(nodeNames[nodeNames.length - 1]);
+            nodeNames.forEach(name => {
+                if (!colLeft.includes(name) && !colRight.includes(name) && !colMiddle.includes(name)) {
+                    colMiddle.push(name);
+                }
+            });
+
+            // Set dynamic canvas coordinates
+            const width = 600;
+            const height = 340;
+            const coords = {};
+
+            const assignCoords = (list, x) => {
+                const n = list.length;
+                list.forEach((name, idx) => {
+                    const y = n === 1 ? height / 2 : (idx + 0.5) * (height / n);
+                    coords[name] = { x, y, col: list === colLeft ? 'left' : list === colRight ? 'right' : 'middle' };
+                });
+            };
+
+            assignCoords(colLeft, 90);
+            assignCoords(colMiddle, 300);
+            assignCoords(colRight, 510);
+
+            const nodeWidth = 130;
+            const nodeHeight = 50;
+            const halfW = nodeWidth / 2;
+            const halfH = nodeHeight / 2;
+
+            // Generate responsive SVG text stream
+            let svgContent = `
+            <svg viewBox="0 0 ${width} ${height}" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b" />
+                    </marker>
+                    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                        <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08" />
+                    </filter>
+                </defs>
+            `;
+
+            // Draw link connections
+            visualMap.forEach((link, idx) => {
+                const start = coords[link.from_variable.trim()];
+                const end = coords[link.to_variable.trim()];
+
+                if (start && end) {
+                    let startX = start.x;
+                    let startY = start.y;
+                    let endX = end.x;
+                    let endY = end.y;
+
+                    if (start.x < end.x) {
+                        startX += halfW;
+                        endX -= halfW;
+                    } else if (start.x > end.x) {
+                        startX -= halfW;
+                        endX += halfW;
+                    } else {
+                        startY += start.y < end.y ? halfH : -halfH;
+                        endY += start.y < end.y ? -halfH : halfH;
+                    }
+
+                    // Cubic Bezier curve offsets
+                    const cp1X = startX + (endX - startX) * 0.4;
+                    const cp1Y = startY;
+                    const cp2X = startX + (endX - startX) * 0.6;
+                    const cp2Y = endY;
+
+                    // Connector Path
+                    svgContent += `<path d="M ${startX} ${startY} C ${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}" fill="none" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrow)" />`;
+
+                    // Midpoint relationship label
+                    if (link.relationship) {
+                        const midX = (startX + endX) / 2;
+                        const midY = (startY + endY) / 2;
+                        const label = link.relationship.toLowerCase();
+                        const labelWidth = label.length * 6 + 10;
+                        
+                        svgContent += `
+                        <g transform="translate(${midX - labelWidth / 2}, ${midY - 9})">
+                            <rect width="${labelWidth}" height="18" rx="9" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+                            <text x="${labelWidth / 2}" y="12" font-size="8" fill="#64748b" font-weight="600" text-anchor="middle" font-family="Inter, sans-serif">${label}</text>
+                        </g>
+                        `;
+                    }
+                }
+            });
+
+            // Helper to split text labels gracefully inside nodes
+            const wrapText = (text, limit = 15) => {
+                const words = text.split(' ');
+                const lines = [];
+                let curr = "";
+                words.forEach(w => {
+                    if ((curr + " " + w).trim().length > limit) {
+                        lines.push(curr.trim());
+                        curr = w;
+                    } else {
+                        curr += " " + w;
+                    }
+                });
+                if (curr) lines.push(curr.trim());
+                return lines.slice(0, 3);
+            };
+
+            // Render Nodes
+            nodeNames.forEach(name => {
+                const coord = coords[name];
+                if (!coord) return;
+
+                let bgColor = "#eff6ff"; 
+                let strokeColor = "#3b82f6";
+                let textColor = "#1e3a8a";
+                let badgeText = "IV";
+
+                if (coord.col === 'right') {
+                    bgColor = "#ecfdf5"; 
+                    strokeColor = "#10b981";
+                    textColor = "#064e3b";
+                    badgeText = "DV";
+                } else if (coord.col === 'middle') {
+                    bgColor = "#f5f3ff"; 
+                    strokeColor = "#8b5cf6";
+                    textColor = "#3b0764";
+                    badgeText = "MV";
+                    
+                    const vMatch = variables.find(v => v.name.toLowerCase().trim() === name.toLowerCase().trim());
+                    if (vMatch) {
+                        if (vMatch.type.toLowerCase().includes('confound')) badgeText = "CV";
+                        else if (vMatch.type.toLowerCase().includes('moderator')) badgeText = "Mod";
+                        else if (vMatch.type.toLowerCase().includes('mediator')) badgeText = "Med";
+                    }
+                }
+
+                const x = coord.x - halfW;
+                const y = coord.y - halfH;
+                const lines = wrapText(name);
+
+                svgContent += `
+                <g transform="translate(${x}, ${y})" filter="url(#shadow)">
+                    <rect width="${nodeWidth}" height="${nodeHeight}" rx="8" fill="${bgColor}" stroke="${strokeColor}" stroke-width="1.5" />
+                    
+                    <!-- Node Category Badge -->
+                    <g transform="translate(6, 6)">
+                        <rect width="22" height="11" rx="3" fill="${strokeColor}" opacity="0.12" />
+                        <text x="11" y="8" font-size="7" font-weight="bold" fill="${strokeColor}" text-anchor="middle" font-family="Inter, sans-serif">${badgeText}</text>
+                    </g>
+
+                    <text x="${nodeWidth / 2}" y="${nodeHeight / 2 + 3}" font-family="Inter, sans-serif" font-size="9" font-weight="600" fill="${textColor}" text-anchor="middle">
+                `;
+
+                if (lines.length === 1) {
+                    svgContent += `<tspan x="${nodeWidth / 2}" dy="0">${lines[0]}</tspan>`;
+                } else if (lines.length === 2) {
+                    svgContent += `<tspan x="${nodeWidth / 2}" dy="-4">${lines[0]}</tspan>`;
+                    svgContent += `<tspan x="${nodeWidth / 2}" dy="10">${lines[1]}</tspan>`;
+                } else {
+                    svgContent += `<tspan x="${nodeWidth / 2}" dy="-8">${lines[0]}</tspan>`;
+                    svgContent += `<tspan x="${nodeWidth / 2}" dy="9">${lines[1]}</tspan>`;
+                    svgContent += `<tspan x="${nodeWidth / 2}" dy="9">${lines[2]}</tspan>`;
+                }
+
+                svgContent += `
+                    </text>
+                </g>
+                `;
+            });
+
+            svgContent += `</svg>`;
+            container.innerHTML = svgContent;
+        }
+
         async function generateLiteratureReview() {
             if (!currentGeneratedData || !currentGeneratedData.objectives) return;
-            const apiKey = apiKeyInput.value.trim();
+            hideRateLimitWarning();
             
             const litBtn = document.getElementById('generateLitReviewBtn');
             const litContainer = document.getElementById('literatureReviewContainer');
@@ -628,21 +1012,14 @@
                 4. Format strictly in clean HTML tags (<h3>, <p>, <ul>, <strong>). No markdown.
             `;
 
-            const payload = {
-                contents: [{ parts: [{ text: promptText }] }],
-                systemInstruction: { parts: [{ text: "You are an expert academic researcher. Output strictly valid JSON containing HTML." }] },
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: { type: "OBJECT", properties: { literature_review_html: { type: "STRING" } } },
-                    temperature: 0.3
-                }
-            };
+            const payloadSchema = { type: "OBJECT", properties: { literature_review_html: { type: "STRING" } } };
 
             try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-                const result = await fetchWithRetry(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                
-                const data = JSON.parse(result.candidates[0].content.parts[0].text);
+                const result = await fetchWithRetry(promptText, "You are an expert academic researcher. Output strictly valid JSON containing HTML.", payloadSchema);
+                const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!rawText) throw new Error("Invalid response format received from Gemini.");
+
+                const data = JSON.parse(rawText);
                 currentLiteratureReview = data.literature_review_html;
                 litContent.innerHTML = currentLiteratureReview;
                 litContainer.classList.remove('hidden');
@@ -656,14 +1033,15 @@
                 }, 3000);
             } catch (err) {
                 console.error(err);
-                litBtn.innerHTML = '<i class="fas fa-exclamation-triangle text-lg"></i> Failed. Try Again';
+                let msg = err.message.includes("API_KEY_REJECTED") ? "Invalid API Key" : "Generation Failed";
+                litBtn.innerHTML = `<i class="fas fa-exclamation-triangle text-lg"></i> ${msg}`;
                 litBtn.disabled = false;
             }
         }
 
         async function generateMethodology() {
             if (!currentGeneratedData || !currentGeneratedData.objectives) return;
-            const apiKey = apiKeyInput.value.trim();
+            hideRateLimitWarning();
             
             const methBtn = document.getElementById('generateMethodologyBtn');
             const methContainer = document.getElementById('methodologyContainer');
@@ -678,10 +1056,8 @@
             
             const promptText = `
                 Topic: "${topic}"
-                
                 Objectives:
                 ${objectivesText}
-                
                 Variables & Tools:
                 ${variablesText}
 
@@ -692,21 +1068,14 @@
                 4. Format strictly in clean HTML tags (<h3>, <p>, <ul>, <strong>). No markdown.
             `;
 
-            const payload = {
-                contents: [{ parts: [{ text: promptText }] }],
-                systemInstruction: { parts: [{ text: "You are an expert academic methodologist. Output strictly valid JSON containing HTML." }] },
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: { type: "OBJECT", properties: { methodology_html: { type: "STRING" } } },
-                    temperature: 0.2
-                }
-            };
+            const payloadSchema = { type: "OBJECT", properties: { methodology_html: { type: "STRING" } } };
 
             try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-                const result = await fetchWithRetry(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                
-                const data = JSON.parse(result.candidates[0].content.parts[0].text);
+                const result = await fetchWithRetry(promptText, "You are an expert academic methodologist. Output strictly valid JSON containing HTML.", payloadSchema);
+                const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!rawText) throw new Error("Invalid response format received from Gemini.");
+
+                const data = JSON.parse(rawText);
                 currentMethodology = data.methodology_html;
                 methContent.innerHTML = currentMethodology;
                 methContainer.classList.remove('hidden');
@@ -720,14 +1089,15 @@
                 }, 3000);
             } catch (err) {
                 console.error(err);
-                methBtn.innerHTML = '<i class="fas fa-exclamation-triangle text-lg"></i> Failed. Try Again';
+                let msg = err.message.includes("API_KEY_REJECTED") ? "Invalid API Key" : "Generation Failed";
+                methBtn.innerHTML = `<i class="fas fa-exclamation-triangle text-lg"></i> ${msg}`;
                 methBtn.disabled = false;
             }
         }
 
         async function generateFlowchart() {
             if (!currentGeneratedData || !currentGeneratedData.objectives) return;
-            const apiKey = apiKeyInput.value.trim();
+            hideRateLimitWarning();
             
             const flowBtn = document.getElementById('generateFlowchartBtn');
             const flowContainer = document.getElementById('flowchartContainer');
@@ -767,21 +1137,12 @@
                 }
             };
 
-            const payload = {
-                contents: [{ parts: [{ text: promptText }] }],
-                systemInstruction: { parts: [{ text: "You are an expert academic methodologist. Create a highly logical, linear flowchart format." }] },
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: jsonSchema,
-                    temperature: 0.2
-                }
-            };
-
             try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-                const result = await fetchWithRetry(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                
-                const data = JSON.parse(result.candidates[0].content.parts[0].text);
+                const result = await fetchWithRetry(promptText, "You are an expert academic methodologist. Create a highly logical, linear flowchart format.", jsonSchema);
+                const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!rawText) throw new Error("Invalid response format received from Gemini.");
+
+                const data = JSON.parse(rawText);
                 currentFlowchartData = data.steps;
                 
                 // Render the UI timeline representation
@@ -809,78 +1170,293 @@
                 }, 3000);
             } catch (err) {
                 console.error(err);
-                flowBtn.innerHTML = '<i class="fas fa-exclamation-triangle text-lg"></i> Failed. Try Again';
+                let msg = err.message.includes("API_KEY_REJECTED") ? "Invalid API Key" : "Generation Failed";
+                flowBtn.innerHTML = `<i class="fas fa-exclamation-triangle text-lg"></i> ${msg}`;
                 flowBtn.disabled = false;
             }
         }
 
         function downloadFlowchartPPTX() {
-            if (!currentFlowchartData || currentFlowchartData.length === 0) return;
+            if (!currentGeneratedData) return;
 
-            // Initialize pptxgenjs
             let pres = new PptxGenJS();
-            
-            // Define a custom Portrait layout (8.27 x 11.69 is standard A4)
             pres.defineLayout({ name: 'A4Portrait', width: 8.27, height: 11.69 });
             pres.layout = 'A4Portrait';
             
-            let slide = pres.addSlide();
+            // SLIDE 1: Experimental Flowchart (if generated)
+            if (currentFlowchartData && currentFlowchartData.length > 0) {
+                let slide1 = pres.addSlide();
+                
+                slide1.addText("Study Experimental Flowchart", { 
+                    x: 0.5, y: 0.5, w: 7.27, h: 0.8, 
+                    fontSize: 24, bold: true, color: '1e293b', align: 'center' 
+                });
+
+                const numSteps = currentFlowchartData.length;
+                const startY = 1.5;
+                const endY = 11.0; 
+                const totalH = endY - startY;
+                
+                const maxStepH = 1.2;
+                const stepH = Math.min((totalH / numSteps) * 0.7, maxStepH);
+                const gapH = (totalH - (numSteps * stepH)) / (numSteps - 1 || 1);
+
+                currentFlowchartData.forEach((step, i) => {
+                    const y = startY + i * (stepH + gapH);
+
+                    slide1.addShape(pres.ShapeType.rect, {
+                        x: 1.135, y: y, w: 6.0, h: stepH,
+                        fill: { color: 'f8fafc' },
+                        line: { color: '0ea5e9', width: 2 },
+                        rectRadius: 0.1
+                    });
+
+                    slide1.addText([
+                        { text: `Step ${i + 1}: ${step.title}\n`, options: { fontSize: 13, bold: true, color: '0f172a' } },
+                        { text: step.description, options: { fontSize: 10, color: '334155' } }
+                    ], {
+                        x: 1.235, y: y + 0.05, w: 5.8, h: stepH - 0.1,
+                        align: 'center', valign: 'middle'
+                    });
+
+                    if (i < numSteps - 1) {
+                        slide1.addShape(pres.ShapeType.downArrow, {
+                            x: 4.035, 
+                            y: y + stepH + (gapH * 0.1), 
+                            w: 0.2, 
+                            h: gapH * 0.8,
+                            fill: { color: 'cbd5e1' },
+                            line: { color: '94a3b8' }
+                        });
+                    }
+                });
+            }
+
+            // SLIDE 2: Conceptual Framework (Visual Relationship Map)
+            let slide2 = pres.addSlide();
             
-            // Title
-            slide.addText("Study Experimental Flowchart", { 
-                x: 0.5, y: 0.5, w: 7.27, h: 0.8, 
-                fontSize: 24, bold: true, color: '1e293b', align: 'center' 
+            slide2.addText("Conceptual Framework", { 
+                x: 0.5, y: 0.5, w: 7.27, h: 0.6, 
+                fontSize: 22, bold: true, color: '1e293b', align: 'center' 
+            });
+            slide2.addText("Visual Relationship Map (Editable)", { 
+                x: 0.5, y: 1.0, w: 7.27, h: 0.4, 
+                fontSize: 12, italic: true, color: '64748b', align: 'center' 
             });
 
-            const numSteps = currentFlowchartData.length;
-            const startY = 1.5;
-            const endY = 11.0; 
-            const totalH = endY - startY;
+            const variables = currentGeneratedData.variables || [];
+            const visualMap = (currentGeneratedData.conceptual_framework && currentGeneratedData.conceptual_framework.visual_map) || [];
+
+            // Gather all nodes in relationship map
+            const nodeSet = new Set();
+            visualMap.forEach(link => {
+                if (link.from_variable) nodeSet.add(link.from_variable.trim());
+                if (link.to_variable) nodeSet.add(link.to_variable.trim());
+            });
             
-            // Dynamically calculate heights so it fits on one portrait slide
-            const maxStepH = 1.2;
-            const stepH = Math.min((totalH / numSteps) * 0.7, maxStepH);
-            const gapH = (totalH - (numSteps * stepH)) / (numSteps - 1 || 1);
+            // Fallback: If map is empty, pull standard variables
+            if (nodeSet.size === 0) {
+                variables.forEach(v => nodeSet.add(v.name.trim()));
+            }
 
-            currentFlowchartData.forEach((step, i) => {
-                const y = startY + i * (stepH + gapH);
+            const nodeNames = Array.from(nodeSet);
 
-                // Add Rectangle Shape
-                slide.addShape(pres.ShapeType.rect, {
-                    x: 1.135, y: y, w: 6.0, h: stepH,
-                    fill: { color: 'f8fafc' },
-                    line: { color: '0ea5e9', width: 2 },
+            // Group nodes into three structural columns for alignment (Left, Middle, Right)
+            const colLeft = [];
+            const colMiddle = [];
+            const colRight = [];
+
+            nodeNames.forEach(name => {
+                const vMatch = variables.find(v => v.name.toLowerCase().trim() === name.toLowerCase().trim());
+                const type = vMatch ? vMatch.type.toLowerCase() : 'confounding';
+
+                if (type.includes('independent') || type.includes('exposure') || type.includes('predictor') || type.includes('cause')) {
+                    colLeft.push(name);
+                } else if (type.includes('dependent') || type.includes('outcome') || type.includes('effect')) {
+                    colRight.push(name);
+                } else {
+                    colMiddle.push(name);
+                }
+            });
+
+            // Adjust layout if one tier is empty
+            if (colLeft.length === 0 && nodeNames.length > 0) colLeft.push(nodeNames[0]);
+            if (colRight.length === 0 && nodeNames.length > 1) colRight.push(nodeNames[nodeNames.length - 1]);
+            nodeNames.forEach(name => {
+                if (!colLeft.includes(name) && !colRight.includes(name) && !colMiddle.includes(name)) {
+                    colMiddle.push(name);
+                }
+            });
+
+            const width = 600;
+            const height = 340;
+            const coords = {};
+
+            const assignCoords = (list, x) => {
+                const n = list.length;
+                list.forEach((name, idx) => {
+                    const y = n === 1 ? height / 2 : (idx + 0.5) * (height / n);
+                    coords[name] = { x, y, col: list === colLeft ? 'left' : list === colRight ? 'right' : 'middle' };
+                });
+            };
+
+            assignCoords(colLeft, 90);
+            assignCoords(colMiddle, 300);
+            assignCoords(colRight, 510);
+
+            // Proportional Scaling helpers for Slide dimensions (safe area starts y=1.8, height=8.5, width=7.07)
+            const scaleX = (x) => 0.6 + (x / width) * 7.07;
+            const scaleY = (y) => 1.8 + (y / height) * 8.5;
+
+            const nodeW = 1.6;
+            const nodeH = 0.8;
+            const halfW = 130 / 2; // match SVG dimensions for precise calculations
+            const halfH = 50 / 2;
+
+            // Draw line connections (relationships)
+            visualMap.forEach((link) => {
+                const start = coords[link.from_variable.trim()];
+                const end = coords[link.to_variable.trim()];
+
+                if (start && end) {
+                    let startX = start.x;
+                    let startY = start.y;
+                    let endX = end.x;
+                    let endY = end.y;
+
+                    if (start.x < end.x) {
+                        startX += halfW;
+                        endX -= halfW;
+                    } else if (start.x > end.x) {
+                        startX -= halfW;
+                        endX += halfW;
+                    } else {
+                        startY += start.y < end.y ? halfH : -halfH;
+                        endY += start.y < end.y ? -halfH : halfH;
+                    }
+
+                    const pptStartX = scaleX(startX);
+                    const pptStartY = scaleY(startY);
+                    const pptEndX = scaleX(endX);
+                    const pptEndY = scaleY(endY);
+
+                    slide2.addShape(pres.ShapeType.line, {
+                        x: pptStartX,
+                        y: pptStartY,
+                        w: pptEndX - pptStartX,
+                        h: pptEndY - pptStartY,
+                        line: { color: '94a3b8', width: 2, endArrowType: 'triangle' }
+                    });
+
+                    if (link.relationship) {
+                        const midX = (pptStartX + pptEndX) / 2;
+                        const midY = (pptStartY + pptEndY) / 2;
+                        const labelW = 1.1;
+                        const labelH = 0.24;
+                        
+                        slide2.addShape(pres.ShapeType.roundRect, {
+                            x: midX - (labelW / 2), y: midY - (labelH / 2), w: labelW, h: labelH,
+                            fill: { color: 'f8fafc' },
+                            line: { color: 'cbd5e1', width: 1 },
+                            rectRadius: 0.5
+                        });
+                        slide2.addText(link.relationship.toLowerCase(), {
+                            x: midX - (labelW / 2), y: midY - (labelH / 2), w: labelW, h: labelH,
+                            fontSize: 7, bold: true, color: '64748b', align: 'center', valign: 'middle'
+                        });
+                    }
+                }
+            });
+
+            // Draw nodes (variables)
+            nodeNames.forEach(name => {
+                const coord = coords[name];
+                if (!coord) return;
+
+                let bgColorHex = "eff6ff"; 
+                let strokeColorHex = "3b82f6";
+                let textColorHex = "1e3a8a";
+                let badgeText = "IV";
+
+                if (coord.col === 'right') {
+                    bgColorHex = "ecfdf5"; 
+                    strokeColorHex = "10b981";
+                    textColorHex = "064e3b";
+                    badgeText = "DV";
+                } else if (coord.col === 'middle') {
+                    bgColorHex = "f5f3ff"; 
+                    strokeColorHex = "8b5cf6";
+                    textColorHex = "3b0764";
+                    badgeText = "MV";
+                    
+                    const vMatch = variables.find(v => v.name.toLowerCase().trim() === name.toLowerCase().trim());
+                    if (vMatch) {
+                        if (vMatch.type.toLowerCase().includes('confound')) badgeText = "CV";
+                        else if (vMatch.type.toLowerCase().includes('moderator')) badgeText = "Mod";
+                        else if (vMatch.type.toLowerCase().includes('mediator')) badgeText = "Med";
+                    }
+                }
+
+                const px = scaleX(coord.x) - (nodeW / 2);
+                const py = scaleY(coord.y) - (nodeH / 2);
+
+                // Main Node shape
+                slide2.addShape(pres.ShapeType.roundRect, {
+                    x: px, y: py, w: nodeW, h: nodeH,
+                    fill: { color: bgColorHex },
+                    line: { color: strokeColorHex, width: 1.5 },
                     rectRadius: 0.1
                 });
 
-                // Add formatted text inside the rectangle
-                slide.addText([
-                    { text: `Step ${i + 1}: ${step.title}\n`, options: { fontSize: 14, bold: true, color: '0f172a' } },
-                    { text: step.description, options: { fontSize: 11, color: '334155' } }
-                ], {
-                    x: 1.235, y: y + 0.05, w: 5.8, h: stepH - 0.1,
-                    align: 'center', valign: 'middle'
+                // Small classification badge
+                slide2.addShape(pres.ShapeType.roundRect, {
+                    x: px + 0.08, y: py + 0.08, w: 0.35, h: 0.18,
+                    fill: { color: strokeColorHex },
+                    line: { color: strokeColorHex, width: 0.5 },
+                    rectRadius: 0.05
+                });
+                slide2.addText(badgeText, {
+                    x: px + 0.08, y: py + 0.08, w: 0.35, h: 0.18,
+                    fontSize: 7, bold: true, color: 'ffffff', align: 'center', valign: 'middle'
                 });
 
-                // Add down arrow connecting to the next step (if not the last step)
-                if (i < numSteps - 1) {
-                    slide.addShape(pres.ShapeType.downArrow, {
-                        x: 4.035, // Centered (1.135 + 6.0/2 = 4.135, subtract half width 0.1 = 4.035)
-                        y: y + stepH + (gapH * 0.1), 
-                        w: 0.2, 
-                        h: gapH * 0.8,
-                        fill: { color: 'cbd5e1' },
-                        line: { color: '94a3b8' }
-                    });
-                }
+                // Node Text
+                slide2.addText(name, {
+                    x: px + 0.1, y: py + 0.2, w: nodeW - 0.2, h: nodeH - 0.25,
+                    fontSize: 9, bold: true, color: textColorHex, align: 'center', valign: 'middle'
+                });
             });
 
-            // Trigger file download
-            pres.writeFile({ fileName: "Study_Experimental_Flowchart.pptx" });
+            pres.writeFile({ fileName: "ReOB_BME_Study_Design.pptx" });
         }
 
         function downloadAsWord() {
             if (!currentGeneratedData) return;
+
+            let svgHtml = "";
+            const diagramContainer = document.getElementById('frameworkDiagramContainer');
+            if (diagramContainer && diagramContainer.querySelector('svg')) {
+                // Clone the SVG DOM node to manipulate it safely without altering the live UI
+                const svgClone = diagramContainer.querySelector('svg').cloneNode(true);
+                
+                // Set explicit dimensions instead of responsive classes for proper MS Word layout matching
+                svgClone.setAttribute("width", "600");
+                svgClone.setAttribute("height", "340");
+                svgClone.removeAttribute("class");
+                
+                // Serialize the modified XML back to standard string markup
+                svgHtml = svgClone.outerHTML;
+                
+                // Clean and simplify drop-shadow filters so Word parses paths cleanly without flattening to image
+                svgHtml = svgHtml.replace(/filter="url\(#shadow\)"/g, '');
+                svgHtml = svgHtml.replace(/<filter[\s\S]*?<\/filter>/g, '');
+                
+                // Map custom web fonts to universal standard fonts (Arial) for flawless text-box editing in Office
+                svgHtml = svgHtml.replace(/font-family="[^"]*"/g, 'font-family="Arial, Helvetica, sans-serif"');
+                
+                // Wrap in centered container div with page-break defense
+                svgHtml = `<div style="text-align: center; margin: 24px 0; page-break-inside: avoid; clear: both;">${svgHtml}</div>`;
+            }
 
             let content = `
                 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -921,136 +1497,20 @@
             });
 
             if (currentGeneratedData.conceptual_framework) {
-                content += `<br><h2 style="color: #6366f1;">3. Conceptual Framework</h2><p>${currentGeneratedData.conceptual_framework.narrative}</p>`;
-                if(currentGeneratedData.conceptual_framework.visual_map && currentGeneratedData.conceptual_framework.visual_map.length > 0) {
+                content += `
+                    <br>
+                    <h2 style="color: #6366f1;">3. Conceptual Framework</h2>
+                    <p>${currentGeneratedData.conceptual_framework.narrative}</p>
+                `;
+
+                if (svgHtml) {
                     content += `
-                        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; border-color: #cbd5e1; margin-top: 15px;">
-                            <tr style="background-color: #f8fafc;">
-                                <th style="text-align: left;">From Variable</th>
-                                <th style="text-align: left;">Relationship</th>
-                                <th style="text-align: left;">To Variable</th>
-                            </tr>
+                        <h3 style="color: #64748b; font-size: 14px; text-transform: uppercase; margin-top: 20px;">Visual Relationship Map (Editable Vector)</h3>
+                        ${svgHtml}
                     `;
-                    currentGeneratedData.conceptual_framework.visual_map.forEach(path => {
-                        content += `<tr><td><strong>${path.from_variable}</strong></td><td><em>${path.relationship}</em></td><td><strong>${path.to_variable}</strong></td></tr>`;
-                    });
-                    content += `</table>`;
                 }
-            }
 
-            if (currentLiteratureReview) {
-                content += `<br><br><h2 style="color: #059669; border-bottom: 2px solid #059669; padding-bottom: 10px;">4. Literature Review</h2><div style="text-align: justify;">${currentLiteratureReview}</div>`;
-            }
-
-            if (currentMethodology) {
-                content += `<br><br><h2 style="color: #d97706; border-bottom: 2px solid #d97706; padding-bottom: 10px;">5. Methodology</h2><div style="text-align: justify;">${currentMethodology}</div>`;
-            }
-
-            content += `</body></html>`;
-
-            const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'ReOB_BME_Study_Protocol.doc';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }
-
-        function showLoading(title, desc) {
-            emptyState.classList.add('hidden');
-            resultsContainer.classList.add('hidden');
-            resultsContainer.classList.remove('flex');
-            loadingState.classList.remove('hidden');
-            loadingState.classList.add('flex');
-            document.getElementById('loadingTitle').textContent = title;
-            document.getElementById('loadingDesc').textContent = desc;
-            generateBtn.disabled = true;
-            generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-        }
-
-        function showEmpty() {
-            loadingState.classList.add('hidden');
-            loadingState.classList.remove('flex');
-            resultsContainer.classList.add('hidden');
-            resultsContainer.classList.remove('flex');
-            emptyState.classList.remove('hidden');
-            emptyState.classList.add('flex');
-            generateBtn.disabled = false;
-            generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Design';
-        }
-
-        function showError(msg) {
-            errorMsg.textContent = msg;
-            errorMsg.classList.remove('hidden');
-            generateBtn.disabled = false;
-            generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Design';
-        }
-
-        function hideError() { errorMsg.classList.add('hidden'); }
-
-        function copyContent(containerId) {
-            const container = document.getElementById(containerId);
-            const textArea = document.createElement("textarea");
-            textArea.value = container.innerText;
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                const btn = container.parentElement.parentElement.querySelector('button');
-                const oldHTML = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check text-success"></i>';
-                setTimeout(() => btn.innerHTML = oldHTML, 2000);
-            } catch (err) {}
-            document.body.removeChild(textArea);
-        }
-
-        function downloadAsWord() {
-            if (!currentGeneratedData) return;
-
-            let content = `
-                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                <head><meta charset='utf-8'><title>Research Objectives</title></head>
-                <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                    <h1 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">ReOB BME - Study Protocol</h1>
-                    <p><strong>Topic:</strong> ${document.getElementById('topicInput').value || 'Provided Study Topic'}</p>
-                    <br>
-                    <h2 style="color: #10b981;">1. SMART Objectives</h2>
-            `;
-            
-            currentGeneratedData.objectives.forEach((obj, i) => {
-                content += `
-                    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e5e7eb; border-radius: 8px;">
-                        <h3 style="margin-top: 0; color: #1e293b;">Objective ${i + 1}</h3>
-                        <p><strong>Statement:</strong> ${obj.statement}</p>
-                        <ul style="list-style-type: square;">
-                            <li><strong>Specific:</strong> ${obj.specific}</li>
-                            <li><strong>Measurable:</strong> ${obj.measurable}</li>
-                            <li><strong>Achievable:</strong> ${obj.achievable}</li>
-                            <li><strong>Relevant:</strong> ${obj.relevant}</li>
-                            <li><strong>Time-bound:</strong> ${obj.time_bound}</li>
-                        </ul>
-                        <p><em><strong>Supportive Reference:</strong> ${obj.supportive_reference}</em></p>
-                    </div>
-                `;
-            });
-
-            content += `<br><h2 style="color: #0ea5e9;">2. Defined Variables</h2>`;
-            currentGeneratedData.variables.forEach(v => {
-                content += `
-                    <div style="margin-bottom: 15px;">
-                        <h3 style="margin-bottom: 5px; color: #1e293b;">${v.name} <span style="font-size: 0.8em; color: #64748b;">(${v.type})</span></h3>
-                        <p style="margin-top: 0;"><strong>Definition:</strong> ${v.academic_definition}</p>
-                        <p style="margin-top: 0;"><strong>Measurement Tool:</strong> ${v.measurement_tool}</p>
-                    </div>
-                `;
-            });
-
-            if (currentGeneratedData.conceptual_framework) {
-                content += `<br><h2 style="color: #6366f1;">3. Conceptual Framework</h2><p>${currentGeneratedData.conceptual_framework.narrative}</p>`;
-                if(currentGeneratedData.conceptual_framework.visual_map && currentGeneratedData.conceptual_framework.visual_map.length > 0) {
+                if (currentGeneratedData.conceptual_framework.visual_map && currentGeneratedData.conceptual_framework.visual_map.length > 0) {
                     content += `
                         <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; border-color: #cbd5e1; margin-top: 15px;">
                             <tr style="background-color: #f8fafc;">
@@ -1107,6 +1567,54 @@
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
+        }
+
+        function showLoading(title, desc) {
+            emptyState.classList.add('hidden');
+            resultsContainer.classList.add('hidden');
+            resultsContainer.classList.remove('flex');
+            loadingState.classList.remove('hidden');
+            loadingState.classList.add('flex');
+            document.getElementById('loadingTitle').textContent = title;
+            document.getElementById('loadingDesc').textContent = desc;
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        }
+
+        function showEmpty() {
+            loadingState.classList.add('hidden');
+            loadingState.classList.remove('flex');
+            resultsContainer.classList.add('hidden');
+            resultsContainer.classList.remove('flex');
+            emptyState.classList.remove('hidden');
+            emptyState.classList.add('flex');
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Design';
+        }
+
+        function showError(msg) {
+            errorMsg.innerHTML = `<div>${msg}</div>`;
+            errorMsg.classList.remove('hidden');
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Design';
+        }
+
+        function hideError() { errorMsg.classList.add('hidden'); }
+
+        function copyContent(containerId) {
+            const container = document.getElementById(containerId);
+            const textArea = document.createElement("textarea");
+            textArea.value = container.innerText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                const btn = container.parentElement.parentElement.querySelector('button');
+                const oldHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check text-success"></i>';
+                setTimeout(() => btn.innerHTML = oldHTML, 2000);
+            } catch (err) {}
+            document.body.removeChild(textArea);
         }
     </script>
 </body>
