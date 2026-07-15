@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReOB BME - Research Objectives Generator</title>
+    <!-- Load Tailwind CSS framework for fluid adaptive layouts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Load PowerPoint dynamic library for editable PPTX slide exports -->
     <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <script>
         tailwind.config = {
@@ -34,7 +36,7 @@
         .glass-panel {
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(226, 232, 240, 0.8);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
         }
         .smart-letter {
@@ -63,7 +65,6 @@
             50% { opacity: .5; }
         }
         
-        /* Styles for generated literature review and methodology HTML */
         .generated-content h1, .generated-content h2, .generated-content h3 { font-size: 1.125rem; font-weight: 700; color: #1e293b; margin-top: 1.5rem; margin-bottom: 0.75rem; }
         .generated-content p { margin-bottom: 1rem; color: #334155; line-height: 1.625; }
         .generated-content ul, .generated-content ol { padding-left: 1.5rem; margin-bottom: 1rem; color: #334155; list-style-type: disc; }
@@ -81,18 +82,18 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-slate-900 leading-tight">ReOB BME</h1>
-                    <p class="text-xs text-slate-500 font-medium">Research Objectives Generator</p>
+                    <p class="text-xs text-slate-500 font-medium">Research Objectives & Grant Suite</p>
                 </div>
             </div>
             <div class="flex items-center gap-2 text-sm font-medium text-slate-500 hidden sm:flex">
-                Powered by <span class="text-primary font-bold"><i class="fas fa-bolt text-yellow-400"></i> Gemini AI</span>
+                Powered by <span class="text-primary font-bold"><i class="fas fa-bolt text-yellow-400"></i> Gemini & Perplexity Engine</span>
             </div>
         </div>
     </header>
 
     <main class="flex-grow max-w-6xl mx-auto w-full px-4 py-8 flex flex-col lg:flex-row gap-8">
         
-        <!-- Input Section (Left) -->
+        <!-- Input Section (Left Column) -->
         <div class="w-full lg:w-1/3 flex flex-col gap-6">
             
             <!-- API Key & Model Configuration -->
@@ -104,7 +105,6 @@
                     <div>
                         <label for="apiKeyInput" class="block text-xs font-semibold text-slate-600 mb-1">Gemini API Key *</label>
                         <input type="password" id="apiKeyInput" class="w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm placeholder-slate-400" placeholder="Paste your Google Gemini API key here...">
-                        <!-- Real-time key validation notification -->
                         <div id="apiKeyWarning" class="hidden mt-1 text-[10px] text-amber-600 font-semibold flex items-center gap-1">
                             <i class="fas fa-exclamation-triangle"></i> Key structure looks unusual (should start with AIzaSy or AQ.).
                         </div>
@@ -112,16 +112,16 @@
                     <div>
                         <label for="modelSelect" class="block text-xs font-semibold text-slate-600 mb-1">Select Engine Model</label>
                         <select id="modelSelect" class="w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-sm">
-                            <option value="gemini-3.5-flash" selected>Gemini 3.5 Flash (Highly Recommended - Default)</option>
-                            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite (Ultra-Fast / High Quota)</option>
+                            <option value="gemini-3.5-flash" selected>Gemini 3.5 Flash (Recommended)</option>
+                            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite (High Quota)</option>
                         </select>
                     </div>
-                    <p class="text-[10px] text-slate-500">Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-primary hover:underline font-bold">Google AI Studio</a>. Saved securely in your browser.</p>
+                    <p class="text-[10px] text-slate-500">Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-primary hover:underline font-bold">Google AI Studio</a>.</p>
                 </div>
             </div>
 
             <!-- Notification Toast / Rate Banner -->
-            <div id="rateLimitAlert" class="hidden p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-xs flex flex-col gap-1 shadow-sm">
+            <div id="rateLimitAlert" class="hidden p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 text-xs flex flex-col gap-1.5 shadow-sm">
                 <div class="flex items-center gap-2 font-bold">
                     <i class="fas fa-exclamation-triangle"></i>
                     <span>Quota Limit Warning!</span>
@@ -144,7 +144,24 @@
                     
                     <div>
                         <label for="contextInput" class="block text-sm font-semibold text-slate-700 mb-1">Additional Context (Optional)</label>
-                        <input type="text" id="contextInput" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm placeholder-slate-400" placeholder="Target population, specific methods, duration...">
+                        <input type="text" id="contextInput" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm placeholder-slate-400" placeholder="Target population, specific methods...">
+                    </div>
+
+                    <!-- Dynamic Duration Slider Control -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label for="durationInput" class="block text-sm font-semibold text-slate-700">Project Duration *</label>
+                            <span id="durationVal" class="text-xs font-bold text-primary bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">36 Months</span>
+                        </div>
+                        <input type="range" id="durationInput" min="6" max="60" value="36" step="6" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-semibold px-1 mt-1">
+                            <span>6 Months</span>
+                            <span>12M</span>
+                            <span>24M</span>
+                            <span>36M (Default)</span>
+                            <span>48M</span>
+                            <span>60 Months</span>
+                        </div>
                     </div>
 
                     <button id="generateBtn" class="w-full bg-primary hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 mt-2 shadow-lg shadow-blue-500/30">
@@ -181,7 +198,7 @@
             </div>
         </div>
 
-        <!-- Output Section (Right) -->
+        <!-- Output Display Panel (Right Column) -->
         <div class="w-full lg:w-2/3 flex flex-col gap-6">
             
             <!-- Loading State -->
@@ -201,17 +218,41 @@
                     <i class="fas fa-file-contract text-4xl"></i>
                 </div>
                 <h3 class="text-xl font-bold text-slate-700 mb-2">Ready to Design</h3>
-                <p class="text-slate-500 max-w-md">Enter your study topic or title on the left to generate structured SMART objectives, variables, and framework.</p>
+                <p class="text-slate-500 max-w-md">Enter your study topic, select project duration, and trigger 'Generate Design' on the left to synthesize high-level academic frameworks.</p>
             </div>
 
             <!-- Results Container -->
             <div id="resultsContainer" class="hidden flex-col gap-6">
                 
+                <!-- Summary Statement Abstract Box -->
+                <div id="summaryStatementBox" class="glass-panel rounded-2xl overflow-hidden border border-slate-200 animate-fadeIn">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-star text-amber-500"></i> Summary Statement
+                        </h2>
+                    </div>
+                    <div class="p-6 bg-white" id="summaryStatementContent">
+                        <!-- Content injected here -->
+                    </div>
+                </div>
+
+                <!-- Research Project Summary -->
+                <div id="projectSummaryContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200 animate-fadeIn">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-file-alt text-primary"></i> Research Project Summary
+                        </h2>
+                    </div>
+                    <div class="p-6 bg-white space-y-6" id="projectSummaryContent">
+                        <!-- Content injected here -->
+                    </div>
+                </div>
+
                 <!-- Objectives Section -->
                 <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
                     <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
                         <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-bullseye text-success"></i> SMART Objectives
+                            <i class="fas fa-bullseye text-success"></i> SMART Objectives & Research Questions
                         </h2>
                         <button onclick="copyContent('objectivesList')" class="text-slate-400 hover:text-primary transition-colors" title="Copy Objectives">
                             <i class="far fa-copy"></i>
@@ -241,11 +282,11 @@
                     </div>
                 </div>
 
-                <!-- Conceptual Framework Section -->
+                <!-- Conceptual Framework & Context Panel -->
                 <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
                     <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
                         <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-project-diagram text-indigo-500"></i> Conceptual Framework
+                            <i class="fas fa-project-diagram text-indigo-500"></i> Conceptual Framework and Research Context
                         </h2>
                         <button onclick="copyContent('frameworkContent')" class="text-slate-400 hover:text-primary transition-colors" title="Copy Framework">
                             <i class="far fa-copy"></i>
@@ -274,13 +315,27 @@
 
                 <!-- Literature Review Window -->
                 <div id="literatureReviewContainer" class="hidden glass-panel rounded-2xl overflow-hidden border border-slate-200">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-book-open text-emerald-600"></i> Literature Review
-                        </h2>
-                        <button onclick="copyContent('literatureReviewContent')" class="text-slate-400 hover:text-primary transition-colors" title="Copy Literature Review">
-                            <i class="far fa-copy"></i>
-                        </button>
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fas fa-book-open text-emerald-600"></i> Grounded Literature Review & Gap Analysis
+                            </h2>
+                            <p class="text-[10px] text-slate-500 font-medium">Perplexity AI Grounding Method (Synthesized via Google Search)</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="copyContent('literatureReviewContent')" class="text-slate-400 hover:text-primary transition-colors p-2" title="Copy Literature Review">
+                                <i class="far fa-copy text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Source Chips Container -->
+                    <div id="litGroundedSourcesBox" class="hidden bg-slate-50 border-b border-slate-200 p-6">
+                        <h3 class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-3 flex items-center gap-1.5">
+                            <i class="fas fa-globe"></i> Grounded Search Sources (Perplexity Style)
+                        </h3>
+                        <div id="litGroundedSourcesList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                            <!-- Dynamic Source Chips -->
+                        </div>
                     </div>
                     <div class="p-8 generated-content text-sm bg-white" id="literatureReviewContent">
                         <!-- Lit Review injected here -->
@@ -317,6 +372,142 @@
                     </div>
                 </div>
 
+                <!-- Project Management Summary Window -->
+                <div id="projectManagementContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-tasks text-pink-600"></i> Project Management Summary (Nature Grant Style)
+                        </h2>
+                    </div>
+                    <div class="p-6 bg-white space-y-4" id="projectManagementContent">
+                        <p class="text-slate-400 text-sm italic">Generated automatically upon clicking 'Generate Design'...</p>
+                    </div>
+                </div>
+
+                <!-- Visual Gantt Timeline / Calendar Section -->
+                <div id="ganttTimelineContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-calendar-alt text-teal-600"></i> <span id="ganttTitleLabel">36-Month Project Timeline</span> / Gantt Chart
+                        </h2>
+                        <span class="text-xs bg-teal-50 border border-teal-200 text-teal-700 px-2 py-1 rounded font-medium">Downloadable in PPTX</span>
+                    </div>
+                    <div class="p-6 bg-white overflow-x-auto" id="ganttTimelineContent">
+                        <p class="text-slate-400 text-sm italic">Pending study parameters generation...</p>
+                    </div>
+                </div>
+
+                <!-- Dissemination and Impact Plan Section -->
+                <div id="disseminationContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-bullhorn text-red-500"></i> Dissemination & Broad Impact Plan
+                        </h2>
+                    </div>
+                    <div class="p-6 bg-white space-y-4" id="disseminationContent">
+                        <p class="text-slate-400 text-sm italic">Will generate based on study context and stakeholders...</p>
+                    </div>
+                </div>
+
+                <!-- Research Environment / Institutional Fit Section -->
+                <div id="researchEnvironmentContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200 animate-fadeIn">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-building text-indigo-600"></i> Research Environment & Institutional Fit
+                        </h2>
+                    </div>
+                    <div class="p-6 bg-white space-y-4" id="researchEnvironmentContent">
+                        <p class="text-slate-400 text-sm italic">Will generate based on study parameters and institutional fit...</p>
+                    </div>
+                </div>
+
+                <!-- Dynamic Interactive Budgeting Calculator Window -->
+                <div id="budgetContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-dollar-sign text-emerald-500"></i> Dynamic Project Budget Plan (12-Month Period)
+                        </h2>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="font-bold text-slate-500">Direct Cost Cap:</span>
+                            <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold border border-emerald-300">$100,000</span>
+                        </div>
+                    </div>
+                    <div class="p-6 bg-white">
+                        <p class="text-xs text-slate-500 leading-relaxed mb-6">
+                            Customize the calculated values in US dollars. The direct budget must not exceed <strong>$100,000</strong>. Institutional overhead (Indirect Costs) is restricted to a maximum of <strong>10%</strong> of the total direct costs.
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <!-- Input Fields Category Left -->
+                            <div class="space-y-4">
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b pb-1"><i class="fas fa-user-friends mr-1"></i> Personnel & Operations</h3>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Personnel / Researchers Salaries ($)</label>
+                                    <input type="number" id="budgetPersonnel" class="budget-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" value="0" min="0">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Equipment Purchase/Leasing ($)</label>
+                                    <input type="number" id="budgetEquipment" class="budget-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" value="0" min="0">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Lab Consumables & Supplies ($)</label>
+                                    <input type="number" id="budgetConsumables" class="budget-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" value="0" min="0">
+                                </div>
+                            </div>
+                            
+                            <!-- Input Fields Category Right -->
+                            <div class="space-y-4">
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b pb-1"><i class="fas fa-plane-departure mr-1"></i> Logistics & Overhead</h3>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Travel (Conferences, Fieldwork) ($)</label>
+                                    <input type="number" id="budgetTravel" class="budget-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" value="0" min="0">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Publication & Dissemination ($)</label>
+                                    <input type="number" id="budgetPublications" class="budget-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" value="0" min="0">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <label class="block text-xs font-semibold text-slate-600">Institutional Indirect Costs ($)</label>
+                                        <span id="maxIndirectLabel" class="text-[10px] text-indigo-600 font-bold">Max Allowed: $0</span>
+                                    </div>
+                                    <input type="number" id="budgetIndirect" class="budget-input w-full rounded-xl border border-indigo-200 bg-indigo-50/50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all font-semibold text-indigo-900" value="0" min="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recalculation Output Panel -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                            <div class="text-center p-2">
+                                <span class="block text-xs font-bold text-slate-500 uppercase">Total Direct Costs</span>
+                                <span id="displayDirectTotal" class="text-2xl font-black text-slate-800">$0</span>
+                            </div>
+                            <div class="text-center p-2 border-y md:border-y-0 md:border-x border-slate-200">
+                                <span class="block text-xs font-bold text-slate-500 uppercase">Indirect Costs (Overhead)</span>
+                                <span id="displayIndirect" class="text-2xl font-black text-indigo-700">$0</span>
+                            </div>
+                            <div class="text-center p-2">
+                                <span class="block text-xs font-bold text-slate-500 uppercase">Total Overall Budget Request</span>
+                                <span id="displayGrandTotal" class="text-2xl font-black text-success">$0</span>
+                            </div>
+                        </div>
+
+                        <!-- Validation Alerts -->
+                        <div id="budgetAlerts" class="mt-4 space-y-2">
+                            <!-- Interactive warnings inject dynamically -->
+                        </div>
+
+                        <div class="mt-6 pt-6 border-t border-slate-200">
+                            <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1.5">
+                                <i class="fas fa-file-invoice-dollar text-emerald-600"></i> Budget Justification (Max 400 words)
+                            </h3>
+                            <div id="budgetJustificationContent" class="text-xs text-slate-600 leading-relaxed text-justify bg-slate-50 p-4 rounded-xl border border-slate-150">
+                                <p class="text-slate-400 italic">Will generate based on final study budget allocations...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -335,6 +526,9 @@
         const generateBtn = document.getElementById('generateBtn');
         const topicInput = document.getElementById('topicInput');
         const contextInput = document.getElementById('contextInput');
+        const durationInput = document.getElementById('durationInput');
+        const durationVal = document.getElementById('durationVal');
+        const ganttTitleLabel = document.getElementById('ganttTitleLabel');
         const errorMsg = document.getElementById('errorMsg');
         const emptyState = document.getElementById('emptyState');
         const loadingState = document.getElementById('loadingState');
@@ -351,6 +545,12 @@
         const modelSelect = document.getElementById('modelSelect');
         const rateLimitAlert = document.getElementById('rateLimitAlert');
         const rateLimitMessage = document.getElementById('rateLimitMessage');
+
+        // Project Panels Content Nodes
+        const projectManagementContent = document.getElementById('projectManagementContent');
+        const ganttTimelineContent = document.getElementById('ganttTimelineContent');
+        const disseminationContent = document.getElementById('disseminationContent');
+        const researchEnvironmentContent = document.getElementById('researchEnvironmentContent');
         
         // App State
         let uploadedLiterature = "";
@@ -358,21 +558,37 @@
         let currentLiteratureReview = null;
         let currentMethodology = null;
         let currentFlowchartData = null;
+        let currentProjectDuration = 36; // Default active state matching slider of 36
 
-        // API Configuration Persistence and Migration
+        // Definitive local storage check to purge completely retired model profiles from 2026
+        const legacyModels = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-lite', 'gemini-1.5-pro', 'gemini-2.0-flash'];
+        const savedModel = localStorage.getItem('geminiPreferredModel');
+        if (legacyModels.includes(savedModel) || !savedModel) {
+            localStorage.setItem('geminiPreferredModel', 'gemini-3.5-flash');
+        }
+
+        // Initialize Dynamic Slider Label and synchronizing timeline states
+        durationInput.addEventListener('input', (e) => {
+            durationVal.textContent = `${e.target.value} Months`;
+            currentProjectDuration = parseInt(e.target.value) || 36;
+            ganttTitleLabel.textContent = `${currentProjectDuration}-Month Project Timeline`;
+        });
+
+        // Initialize duration state at startup
+        currentProjectDuration = parseInt(durationInput.value) || 36;
+        durationVal.textContent = `${currentProjectDuration} Months`;
+        ganttTitleLabel.textContent = `${currentProjectDuration}-Month Project Timeline`;
+
+        // API Configuration Persistence
         if (localStorage.getItem('geminiApiKey')) {
             const savedKey = localStorage.getItem('geminiApiKey');
             apiKeyInput.value = savedKey;
             checkKeyFormat(savedKey);
         }
-        if (localStorage.getItem('geminiPreferredModel')) {
-            const savedModel = localStorage.getItem('geminiPreferredModel');
-            if (['gemini-3.5-flash', 'gemini-3.1-flash-lite'].includes(savedModel)) {
-                modelSelect.value = savedModel;
-            } else {
-                modelSelect.value = 'gemini-3.5-flash';
-                localStorage.setItem('geminiPreferredModel', 'gemini-3.5-flash');
-            }
+        
+        const persistentModel = localStorage.getItem('geminiPreferredModel');
+        if (['gemini-3.5-flash', 'gemini-3.1-flash-lite'].includes(persistentModel)) {
+            modelSelect.value = persistentModel;
         } else {
             modelSelect.value = 'gemini-3.5-flash';
             localStorage.setItem('geminiPreferredModel', 'gemini-3.5-flash');
@@ -388,7 +604,6 @@
             localStorage.setItem('geminiPreferredModel', e.target.value);
         });
 
-        // Function to verify key looks standard but doesn't hard-block execution
         function checkKeyFormat(key) {
             if (key && !key.startsWith('AIzaSy') && !key.startsWith('AQ.')) {
                 apiKeyWarning.classList.remove('hidden');
@@ -397,7 +612,6 @@
             }
         }
 
-        // File Upload Handling
         fileUpload.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -414,35 +628,128 @@
 
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         
-        // Lenient verification logic allows any reasonably long API key format to execute
         function isValidGeminiKeyFormat(key) {
             return typeof key === 'string' && key.trim().length >= 15;
         }
 
-        async function fetchWithRetry(promptPayload, systemInstruction, responseSchema, maxRetries = 4) {
+        function cleanAndParseJSON(rawText) {
+            if (!rawText) return null;
+            let cleanText = rawText.trim();
+            
+            // Strip markdown JSON block wrappings if present
+            if (cleanText.startsWith("```json")) {
+                cleanText = cleanText.substring(7);
+            } else if (cleanText.startsWith("```")) {
+                cleanText = cleanText.substring(3);
+            }
+            if (cleanText.endsWith("```")) {
+                cleanText = cleanText.substring(0, cleanText.length - 3);
+            }
+            cleanText = cleanText.trim();
+            
+            try {
+                return JSON.parse(cleanText);
+            } catch (e) {
+                console.warn("Standard JSON parse failed, executing truncated recovery repair...", e);
+                return parseTruncatedJSON(cleanText);
+            }
+        }
+
+        function parseTruncatedJSON(jsonStr) {
+            let clean = jsonStr.trim();
+            
+            // Balance unclosed quotes
+            let inString = false;
+            let escape = false;
+            let chars = clean.split('');
+            for (let i = 0; i < chars.length; i++) {
+                if (chars[i] === '\\' && !escape) {
+                    escape = true;
+                    continue;
+                }
+                if (chars[i] === '"' && !escape) {
+                    inString = !inString;
+                }
+                escape = false;
+            }
+            if (inString) {
+                clean += '"';
+            }
+
+            // Close brackets
+            let stack = [];
+            for (let i = 0; i < clean.length; i++) {
+                let char = clean[i];
+                if (char === '{' || char === '[') {
+                    stack.push(char);
+                } else if (char === '}' || char === ']') {
+                    stack.pop();
+                }
+            }
+
+            while (stack.length > 0) {
+                let last = stack.pop();
+                if (last === '{') clean += '}';
+                if (last === '[') clean += ']';
+            }
+
+            try {
+                return JSON.parse(clean);
+            } catch (err) {
+                throw new Error("Unable to salvage unparsable model response structure.");
+            }
+        }
+
+        async function fetchWithRetryInternal(promptPayload, systemInstruction, responseSchema = null, enableSearch = false, maxRetries = 5) {
             const apiKey = apiKeyInput.value.trim();
             
             if (!apiKey) {
                 throw new Error("API_KEY_MISSING: Please enter your Gemini API Key in the configuration panel.");
             }
             if (!isValidGeminiKeyFormat(apiKey)) {
-                throw new Error("API_KEY_FORMAT_INVALID: The key entered seems too short to be a valid API key. Please check your credentials.");
+                throw new Error("API_KEY_FORMAT_INVALID: The key entered seems too short to be a valid API key.");
             }
 
-            let chosenModel = modelSelect.value;
-            const delays = [1000, 2000, 4000, 8000];
+            const modelTiers = [
+                'gemini-3.5-flash',
+                'gemini-3.1-flash-lite'
+            ];
+
+            let currentModel = modelSelect.value;
+            if (legacyModels.includes(currentModel) || !modelTiers.includes(currentModel)) {
+                currentModel = 'gemini-3.5-flash';
+                modelSelect.value = 'gemini-3.5-flash';
+                localStorage.setItem('geminiPreferredModel', 'gemini-3.5-flash');
+            }
+
+            let currentTierIndex = modelTiers.indexOf(currentModel);
+            if (currentTierIndex === -1) {
+                currentTierIndex = 0;
+                currentModel = modelTiers[0];
+            }
+
+            const delays = [1500, 3000, 6000, 12000, 20000];
 
             for (let i = 0; i < maxRetries; i++) {
-                let url = `https://generativelanguage.googleapis.com/v1beta/models/${chosenModel}:generateContent?key=${apiKey}`;
+                let url = `https://generativelanguage.googleapis.com/v1beta/models/${currentModel}:generateContent?key=${apiKey}`;
+                
                 const payload = {
                     contents: [{ parts: [{ text: promptPayload }] }],
                     systemInstruction: { parts: [{ text: systemInstruction }] },
                     generationConfig: {
-                        responseMimeType: "application/json",
-                        responseSchema: responseSchema,
-                        temperature: 0.2
+                        temperature: 0.25
                     }
                 };
+
+                // Add search tools if requested
+                if (enableSearch) {
+                    payload.tools = [{ "google_search": {} }];
+                }
+
+                if (responseSchema && !enableSearch) {
+                    payload.generationConfig.responseMimeType = "application/json";
+                    payload.generationConfig.responseSchema = responseSchema;
+                }
 
                 try {
                     const response = await fetch(url, {
@@ -451,61 +758,92 @@
                         body: JSON.stringify(payload)
                     });
 
-                    if (response.status === 400) {
-                        const errorData = await response.json().catch(() => ({}));
-                        const errMsg = errorData.error?.message || "";
-                        if (errMsg.includes("API key not valid") || errorData.error?.status === "INVALID_ARGUMENT") {
-                            throw new Error("API_KEY_REJECTED: Google rejected this API key as invalid. Please double-check that you copied the complete key correctly from Google AI Studio.");
-                        }
-                        throw new Error(`Google API Error (HTTP 400): ${errMsg || "Bad Request"}`);
+                    if (response.ok) {
+                        hideRateLimitWarning();
+                        return await response.json();
+                    }
+
+                    const errorData = await response.json().catch(() => ({}));
+                    const errMsg = errorData.error?.message || "";
+
+                    if (response.status === 400 && (errMsg.includes("API key not valid") || errorData.error?.status === "INVALID_ARGUMENT")) {
+                        throw new Error("API_KEY_REJECTED: Google rejected this API key as invalid.");
                     }
 
                     if (response.status === 404) {
-                        const errorData = await response.json().catch(() => ({}));
-                        const errMsg = errorData.error?.message || "";
-                        throw new Error(`Google API Error (HTTP 404): ${errMsg || "Not Found. The selected model may be unsupported or unavailable. Try selecting 'Gemini 3.5 Flash'."}`);
+                        throw new Error(`Google API Error (HTTP 404): ${errMsg || "Model not found."}`);
                     }
 
+                    // Handle rate limiting/quota triggers specifically
                     if (response.status === 429) {
-                        const errorData = await response.json().catch(() => ({}));
-                        const errMsg = errorData.error?.message || "";
+                        if (enableSearch || errMsg.toLowerCase().includes("search") || errMsg.toLowerCase().includes("grounding")) {
+                            throw new Error("SEARCH_QUOTA_EXHAUSTED");
+                        }
                         
-                        if (chosenModel === 'gemini-3.5-flash') {
-                            showRateLimitWarning("Selected engine quota exhausted. Downgrading automatically to high-quota Gemini 3.1 Flash-Lite backup engine...");
-                            chosenModel = 'gemini-3.1-flash-lite';
-                            modelSelect.value = 'gemini-3.1-flash-lite';
-                            localStorage.setItem('geminiPreferredModel', 'gemini-3.1-flash-lite');
-                            await sleep(1500);
+                        const waitSec = Math.ceil(delays[i] / 1000);
+                        showRateLimitWarning(`Rate limited (429). Retrying in ${waitSec}s... Adding card/billing to Google AI Studio increases these caps substantially.`);
+                        await sleep(delays[i]);
+                        continue;
+                    }
+
+                    // Handle standard server busyness fallbacks
+                    if (response.status === 503 || response.status === 500 || response.status === 502 || response.status === 504) {
+                        if (currentTierIndex < modelTiers.length - 1) {
+                            currentTierIndex++;
+                            const previousModel = currentModel;
+                            currentModel = modelTiers[currentTierIndex];
+                            
+                            const alertMsg = `Model ${previousModel} busy (HTTP ${response.status}). Shifting load to: ${currentModel}...`;
+                            showRateLimitWarning(alertMsg);
+                            
+                            modelSelect.value = currentModel;
+                            localStorage.setItem('geminiPreferredModel', currentModel);
+                            
+                            await sleep(2000);
                             continue;
                         }
-                        
-                        let delaySec = 30;
-                        if (errMsg.includes("Please retry in")) {
-                            const match = errMsg.match(/retry in ([\d\.]+)/);
-                            if (match && match[1]) delaySec = Math.ceil(parseFloat(match[1]));
+
+                        if (i === maxRetries - 1) {
+                            throw new Error(`Google API Error (HTTP ${response.status}): ${errMsg || "All backup options busy."}`);
                         }
-                        
-                        showRateLimitWarning(`Rate limit encountered. Pausing for ${delaySec}s before automatic retry attempt ${i + 1}/${maxRetries}...`);
+
+                        let delaySec = 10;
+                        showRateLimitWarning(`Busy endpoints. Pausing for ${delaySec}s before retry ${i + 1}/${maxRetries}...`);
                         await sleep(delaySec * 1000);
-                        continue; 
+                        continue;
                     }
 
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        const errMsg = errorData.error?.message || "";
-                        throw new Error(`Google API Error (HTTP ${response.status}): ${errMsg || "Unknown Server Error"}`);
-                    }
-
-                    hideRateLimitWarning();
-                    return await response.json();
+                    throw new Error(`Google API Error (HTTP ${response.status}): ${errMsg || "Unknown Server Error"}`);
 
                 } catch (error) {
+                    if (error.message === "SEARCH_QUOTA_EXHAUSTED") {
+                        throw error;
+                    }
                     if (error.message.startsWith("API_KEY_") || error.message.includes("rejected this API key")) {
                         throw error;
                     }
-                    if (i === maxRetries - 1) throw error;
-                    await sleep(delays[i]);
+                    if (i === maxRetries - 1) {
+                        throw error;
+                    }
+                    await sleep(delays[i] || 2000);
                 }
+            }
+            throw new Error("Google API Error: Maximum retry attempts reached.");
+        }
+
+        // High-level failsafe wrapper
+        async function fetchWithRetry(promptPayload, systemInstruction, responseSchema = null, enableSearch = false, maxRetries = 5) {
+            try {
+                return await fetchWithRetryInternal(promptPayload, systemInstruction, responseSchema, enableSearch, maxRetries);
+            } catch (error) {
+                if (enableSearch || error.message === "SEARCH_QUOTA_EXHAUSTED") {
+                    console.warn("Search-grounded request hit quota or failed. Instantly falling back to standard offline knowledge synthesis...", error);
+                    showRateLimitWarning("Google Search Tool rate limit exceeded. Recovering automatically via Gemini's internal clinical databases...");
+                    await sleep(1500);
+                    // Try again with search completely disabled
+                    return await fetchWithRetryInternal(promptPayload, systemInstruction, responseSchema, false, maxRetries);
+                }
+                throw error;
             }
         }
 
@@ -528,16 +866,21 @@
         generateBtn.addEventListener('click', async () => {
             const apiKey = apiKeyInput.value.trim();
             if (!apiKey) {
-                showError("<strong>API Key Missing:</strong> Please enter your Google Gemini API Key in the configuration panel above to run this application.");
+                showError("<strong>API Key Missing:</strong> Enter your Google Gemini API Key inside the Configuration Box to enable the dynamic suite.");
                 return;
             }
             if (!isValidGeminiKeyFormat(apiKey)) {
-                showError("<strong>Invalid API Key Format:</strong> The entered key is too short. Please provide a valid key from Google AI Studio.");
+                showError("<strong>Invalid API Key Format:</strong> The entered key is too short.");
                 return;
             }
 
             const topic = topicInput.value.trim();
             const context = contextInput.value.trim();
+            const selectedDuration = parseInt(durationInput.value) || 36;
+            
+            // Set dynamic global state accurately
+            currentProjectDuration = selectedDuration;
+            ganttTitleLabel.textContent = `${currentProjectDuration}-Month Project Timeline`;
 
             if (!topic) {
                 showError("Please enter a topic or title of study.");
@@ -546,14 +889,16 @@
 
             hideError();
             hideRateLimitWarning();
-            showLoading("Analyzing Academic Context...", "Consulting scientific literature, extracting variables, and drafting SMART objectives.");
+            showLoading("Analyzing Academic Context...", `Consulting literature, evaluating custom variables, planning ${currentProjectDuration}-month milestone distributions, and drafting high-performance study structures.`);
             
-            // Reset generated secondary docs
+            // Reset state
             currentLiteratureReview = null; 
             currentMethodology = null;
             currentFlowchartData = null;
             document.getElementById('literatureReviewContainer').classList.add('hidden');
             document.getElementById('literatureReviewContent').innerHTML = '';
+            document.getElementById('litGroundedSourcesBox').classList.add('hidden');
+            document.getElementById('litGroundedSourcesList').innerHTML = '';
             document.getElementById('methodologyContainer').classList.add('hidden');
             document.getElementById('methodologyContent').innerHTML = '';
             document.getElementById('flowchartContainer').classList.add('hidden');
@@ -561,22 +906,64 @@
 
             let literatureAddon = uploadedLiterature ? `\n\nProvided Literature Review Context:\n"""\n${uploadedLiterature}\n"""\n` : "";
 
+            // Dynamic evaluation of timeline requirements ensuring zero hardcoded timeline offsets
             const promptText = `
                 I am designing a scientific study. 
                 Topic/Title: "${topic}"
                 Additional Context: "${context}"
+                Total Project Duration: ${currentProjectDuration} Months
                 ${literatureAddon}
 
-                Task 1: Generate 3 to 4 SMART objectives. Break down each into Specific, Measurable, Achievable, Relevant, and Time-bound. Provide a supportive theoretical rationale/reference context for each, and a suggested search query to verify it on Perplexity AI.
-                Task 2: Identify key variables (Independent, Dependent, Confounding). Define them using current academic consensus, list standard measurement tools, and provide a search term.
-                Task 3: Develop a Conceptual Framework mapping the relationships between these variables. Provide a brief narrative and a list of directional paths.
+                Task 1: Generate 3 to 4 SMART objectives. Break down each into Specific, Measurable, Achievable, Relevant, and Time-bound. 
+                Ensure that the 'Time-bound' metric for every objective is highly realistic and maps directly and exclusively into your designated ${currentProjectDuration}-month project duration. Do not reference or span timelines beyond ${currentProjectDuration} months.
+                For every objective, construct a structured "Research Question" that directly guides investigation, a supportive theoretical rationale/reference context, a suggested search query to verify it on Perplexity AI, and exactly 3 sequential operational steps representing the direct workflow/methodology of this specific objective.
+                
+                Task 2: Identify key variables (Independent, Dependent, Confounding/Mediating). Define them using current academic consensus, list standard measurement tools, and provide a search term.
+                
+                Task 3: Develop a Conceptual Framework mapping the relationships between these variables. Provide a brief narrative and a list of directional paths. Include an academic "research_context" paragraph synthesizing the clinical/biological background.
+                
+                Task 4: Write a Project Management Summary in Nature Grant style. Address Governance, Quality Controls, and Risk Mitigation.
+                
+                Task 5: Outline 6 to 9 milestone timeline tasks over a ${currentProjectDuration}-month period for a Gantt chart. Each task must have a name, start_month (1 to ${currentProjectDuration}), end_month (1 to ${currentProjectDuration}), and phase. Double check that no end_month exceeds ${currentProjectDuration}.
+                
+                Task 6: Create a Dissemination and Impact Plan describing how findings will be published, data shared (open access), and broader scientific/societal impacts met.
+                
+                Task 7: Provide recommended budget costs strictly totaling under $100,000 for direct costs (Personnel, Equipment, Consumables, Travel, Publications) and under $10,000 (10% max) for indirect overhead costs.
+
+                Task 8: Generate an elegant, academic "Summary Statement" of maximum 250 words describing the overarching purpose and underlying clinical/biological/scientific importance of your proposed project.
+
+                Task 9: Generate a structured "Research Project Summary" section introducing:
+                   - Context: A narrative summarizing the background, clinical/scientific space, and research gap.
+                   - Objectives: Synthesized objectives statement indicating exactly what the project seeks to establish.
+                   - Research Design and Methodology: A brief overview of the research framework and overall operational strategy matching the ${currentProjectDuration}-month timeline.
+                   - Sample Size: Dynamic mathematical calculations outlining study sample size and statistical power parameters.
+                   - Project Team: Proposed roles, composition (e.g., PI, Co-Investigators, Research Assistants), and responsibilities.
+                   - Dissemination and Impact Plan: High-level overview of outputs and translational/broad impact.
+
+                Task 10: Generate a comprehensive "Budget Justification" statement of maximum 400 words explaining and justifying the resource allocations (Personnel, Equipment, Consumables, Travel, Publications, and Indirect overhead).
+
+                Task 11: Generate a comprehensive "Research Environment" statement of maximum 400 words outlining the institutional fit, detailing the alignment between your project and the specialized laboratory facilities, core equipment capabilities, and clinical/research environments of your institution.
             `;
 
-            const systemInstruction = "You are an expert academic research assistant, specializing in study design, biostatistics, and epidemiology. Provide highly accurate, scientifically rigorous definitions reflecting current scientific consensus.";
+            const systemInstruction = `You are an expert academic research director, grant writer, and biostatistician. Provide highly accurate, scientifically rigorous outputs reflecting modern grant-writing standards. Adapt your timelines, SMART criteria, and operational pathways precisely and exclusively to the project duration of ${currentProjectDuration} months. Do not generate tasks, references, or objectives that mention any timeline exceeding ${currentProjectDuration} months.`;
 
             const jsonSchema = {
                 type: "OBJECT",
                 properties: {
+                    summary_statement: { type: "STRING" },
+                    research_project_summary: {
+                        type: "OBJECT",
+                        properties: {
+                            context: { type: "STRING" },
+                            objectives: { type: "STRING" },
+                            methodology: { type: "STRING" },
+                            sample_size: { type: "STRING" },
+                            project_team: { type: "STRING" },
+                            dissemination: { type: "STRING" }
+                        },
+                        required: ["context", "objectives", "methodology", "sample_size", "project_team", "dissemination"]
+                    },
+                    budget_justification: { type: "STRING" },
                     objectives: {
                         type: "ARRAY",
                         items: {
@@ -588,10 +975,15 @@
                                 achievable: { type: "STRING" },
                                 relevant: { type: "STRING" },
                                 time_bound: { type: "STRING" },
-                                supportive_reference: { type: "STRING", description: "A theoretical rationale or citation context." },
-                                perplexity_query: { type: "STRING", description: "A search phrase to find literature for this objective." }
+                                supportive_reference: { type: "STRING" },
+                                perplexity_query: { type: "STRING" },
+                                research_question: { type: "STRING" },
+                                methodology_steps: {
+                                    type: "ARRAY",
+                                    items: { type: "STRING" }
+                                }
                             },
-                            required: ["statement", "specific", "measurable", "achievable", "relevant", "time_bound", "supportive_reference", "perplexity_query"]
+                            required: ["statement", "specific", "measurable", "achievable", "relevant", "time_bound", "supportive_reference", "perplexity_query", "research_question", "methodology_steps"]
                         }
                     },
                     variables: {
@@ -611,24 +1003,73 @@
                     conceptual_framework: {
                         type: "OBJECT",
                         properties: {
-                            narrative: { type: "STRING", description: "A narrative explaining how variables interact." },
+                            research_context: { type: "STRING" },
+                            narrative: { type: "STRING" },
                             visual_map: {
                                 type: "ARRAY",
                                 items: {
                                     type: "OBJECT",
                                     properties: {
                                         from_variable: { type: "STRING" },
-                                        relationship: { type: "STRING", description: "e.g., influences, moderates, confounds" },
+                                        relationship: { type: "STRING" },
                                         to_variable: { type: "STRING" }
                                     },
                                     required: ["from_variable", "relationship", "to_variable"]
                                 }
                             }
                         },
-                        required: ["narrative", "visual_map"]
-                    }
+                        required: ["research_context", "narrative", "visual_map"]
+                    },
+                    project_management: {
+                        type: "OBJECT",
+                        properties: {
+                            governance: { type: "STRING" },
+                            quality_control: { type: "STRING" },
+                            risks: { type: "STRING" }
+                        },
+                        required: ["governance", "quality_control", "risks"]
+                    },
+                    gantt_tasks: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                task_name: { type: "STRING" },
+                                start_month: { type: "INTEGER", minimum: 1, maximum: currentProjectDuration },
+                                end_month: { type: "INTEGER", minimum: 1, maximum: currentProjectDuration },
+                                phase: { type: "STRING" }
+                            },
+                            required: ["task_name", "start_month", "end_month", "phase"]
+                        }
+                    },
+                    dissemination_impact: {
+                        type: "OBJECT",
+                        properties: {
+                            publishing_strategy: { type: "STRING" },
+                            broader_impacts: { type: "STRING" }
+                        },
+                        required: ["publishing_strategy", "broader_impacts"]
+                    },
+                    recommended_budget: {
+                        type: "OBJECT",
+                        properties: {
+                            personnel: { type: "INTEGER" },
+                            equipment: { type: "INTEGER" },
+                            consumables: { type: "INTEGER" },
+                            travel: { type: "INTEGER" },
+                            publications: { type: "INTEGER" },
+                            indirect: { type: "INTEGER" }
+                        },
+                        required: ["personnel", "equipment", "consumables", "travel", "publications", "indirect"]
+                    },
+                    research_environment: { type: "STRING" }
                 },
-                required: ["objectives", "variables", "conceptual_framework"]
+                required: [
+                    "summary_statement", "research_project_summary", "budget_justification",
+                    "objectives", "variables", "conceptual_framework", 
+                    "project_management", "gantt_tasks", "dissemination_impact", 
+                    "recommended_budget", "research_environment"
+                ]
             };
 
             try {
@@ -636,23 +1077,17 @@
                 const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
                 if (!rawText) throw new Error("Invalid response format received from Gemini.");
 
-                const data = JSON.parse(rawText);
+                const data = cleanAndParseJSON(rawText);
                 renderResults(data);
 
             } catch (err) {
                 console.error("API Error Details:", err);
-                
                 let userFriendlyMessage = "An unexpected error occurred. Please try again.";
                 if (err.message.includes("API_KEY_REJECTED")) {
-                    userFriendlyMessage = `<strong>Google API Key Rejected:</strong> Google reports this key is invalid. <br><br>Please verify your key in Google AI Studio, ensure it has permissions for the Generative Language API, and copy it again without extra spaces.`;
-                } else if (err.message.includes("API_KEY_FORMAT_INVALID")) {
-                    userFriendlyMessage = `<strong>Invalid API Key Format:</strong> The key format is too short. Please review your input.`;
-                } else if (err.message.includes("HTTP 429") || err.message.includes("quota")) {
-                    userFriendlyMessage = `<strong>Rate Limit Exceeded:</strong> You have hit the Google Gemini Free Tier usage limitations. Please wait a minute before requesting again.`;
+                    userFriendlyMessage = `<strong>Google API Key Rejected:</strong> Google reports this key is invalid. Please verify your credentials.`;
                 } else if (err.message) {
                     userFriendlyMessage = `<strong>Generation Error:</strong> ${err.message}`;
                 }
-                
                 showError(userFriendlyMessage);
                 showEmpty();
             }
@@ -660,14 +1095,73 @@
 
         function renderResults(data) {
             currentGeneratedData = data;
+
+            // Render Summary Statement
+            const summaryStatementContent = document.getElementById('summaryStatementContent');
+            if (summaryStatementContent) {
+                summaryStatementContent.innerHTML = `
+                    <div class="p-5 rounded-xl bg-amber-50/40 border border-amber-200">
+                        <p class="text-sm text-slate-700 leading-relaxed text-justify font-medium italic">
+                            "${data.summary_statement || 'Summary statement pending...'}"
+                        </p>
+                    </div>
+                `;
+            }
             
-            // Render Objectives
+            // Render Research Project Summary
+            const summaryHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div class="space-y-4">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-150">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wide mb-1 flex items-center gap-1">
+                                <i class="fas fa-info-circle text-slate-500"></i> Context
+                            </h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">${data.research_project_summary?.context || 'Pending...'}</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-150">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wide mb-1 flex items-center gap-1">
+                                <i class="fas fa-bullseye text-slate-500"></i> Objectives Summary
+                            </h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">${data.research_project_summary?.objectives || 'Pending...'}</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-150">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wide mb-1 flex items-center gap-1">
+                                <i class="fas fa-chart-pie text-slate-500"></i> Sample Size & Power Analysis
+                            </h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">${data.research_project_summary?.sample_size || 'Pending...'}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-150">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wide mb-1 flex items-center gap-1">
+                                <i class="fas fa-flask text-slate-500"></i> Research Design and Methodology
+                            </h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">${data.research_project_summary?.methodology || 'Pending...'}</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-150">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wide mb-1 flex items-center gap-1">
+                                <i class="fas fa-users text-slate-500"></i> Project Team
+                            </h4>
+                            <p class="text-xs text-slate-600 leading-relaxed text-justify">${data.research_project_summary?.project_team || 'Pending...'}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-150">
+                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wide mb-1 flex items-center gap-1">
+                        <i class="fas fa-bullhorn text-slate-500"></i> Dissemination and Impact Plan
+                    </h4>
+                    <p class="text-xs text-slate-600 leading-relaxed text-justify">${data.research_project_summary?.dissemination || 'Pending...'}</p>
+                </div>
+            `;
+            document.getElementById('projectSummaryContent').innerHTML = summaryHTML;
+
+            // Render Objectives + Research Questions + Figures
             objectivesList.innerHTML = data.objectives.map((obj, index) => {
-                const sVal = obj.specific || obj.S || obj.Specific || "No description provided.";
-                const mVal = obj.measurable || obj.M || obj.Measurable || "No description provided.";
-                const aVal = obj.achievable || obj.A || obj.Achievable || "No description provided.";
-                const rVal = obj.relevant || obj.R || obj.Relevant || "No description provided.";
-                const tVal = obj.time_bound || obj.T || obj.TimeBound || obj.time_bound || "No description provided.";
+                const sVal = obj.specific || "No description provided.";
+                const mVal = obj.measurable || "No description provided.";
+                const aVal = obj.achievable || "No description provided.";
+                const rVal = obj.relevant || "No description provided.";
+                const tVal = obj.time_bound || "No description provided.";
 
                 return `
                 <div class="p-4 rounded-xl border border-slate-200 bg-white hover:shadow-md transition-shadow">
@@ -682,20 +1176,49 @@
                                 <div class="bg-purple-50/50 p-2 rounded border border-purple-100"><span class="smart-letter bg-r">R</span> <span class="text-slate-600">${rVal}</span></div>
                                 <div class="bg-red-50/50 p-2 rounded border border-red-100"><span class="smart-letter bg-t">T</span> <span class="text-slate-600">${tVal}</span></div>
                             </div>
-                            <div class="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                <div class="text-xs text-slate-600 flex-grow">
-                                    <strong><i class="fas fa-quote-left text-slate-300 mr-1"></i> Rationale/Support:</strong> ${obj.supportive_reference || 'N/A'}
+                            
+                            <!-- Rationale, Question, and Search Query Area -->
+                            <div class="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-100 space-y-2 text-xs">
+                                <div class="text-slate-600">
+                                    <strong class="text-slate-800"><i class="fas fa-quote-left text-slate-400 mr-1"></i> Rationale/Support:</strong> ${obj.supportive_reference || 'N/A'}
                                 </div>
-                                <a href="${createPerplexityUrl(obj.perplexity_query || obj.statement)}" target="_blank" class="shrink-0 bg-[#222222] hover:bg-black text-white text-xs font-semibold py-1.5 px-3 rounded-lg flex items-center gap-1.5 transition-colors">
-                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    Verify on Perplexity
-                                </a>
+                                <div class="text-slate-700 bg-blue-50/30 p-2 rounded border border-blue-100/50">
+                                    <strong class="text-primary"><i class="fas fa-question-circle mr-1"></i> Research Question:</strong> ${obj.research_question || 'How does this objective behave under current experimental criteria?'}
+                                </div>
+                                
+                                <!-- Methodology Figure Canvas Section -->
+                                <div class="mt-4 pt-4 border-t border-slate-200">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-1.5">
+                                            <i class="fas fa-image text-indigo-500"></i> Methodology Pipeline Figure
+                                        </span>
+                                        <button onclick="downloadObjectiveFig('objCanvas_${index}', 'Objective_${index + 1}_Methodology.jpg')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-1 px-2.5 rounded-lg transition-colors flex items-center gap-1 text-[10px] border border-indigo-200 shadow-sm">
+                                            <i class="fas fa-download"></i> Download Figure (JPG)
+                                        </button>
+                                    </div>
+                                    <div class="bg-white p-2 rounded-xl border border-slate-150 flex justify-center items-center overflow-x-auto">
+                                        <canvas id="objCanvas_${index}" width="800" height="250" class="max-w-full h-auto rounded border" style="min-width: 600px; max-width: 800px;"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
+                                    <span class="text-[10px] text-slate-400 font-mono">Query: "${obj.perplexity_query}"</span>
+                                    <a href="${createPerplexityUrl(obj.perplexity_query || obj.statement)}" target="_blank" class="shrink-0 bg-[#222222] hover:bg-black text-white text-xs font-semibold py-1.5 px-3 rounded-lg flex items-center gap-1.5 transition-colors">
+                                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        Verify on Perplexity
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 `;
             }).join('');
+
+            // Draw figures on canvas for each objective
+            data.objectives.forEach((obj, index) => {
+                drawObjectiveMethodologyCanvas(`objCanvas_${index}`, obj.methodology_steps || [], index, obj.statement);
+            });
 
             // Render Variables
             variablesList.innerHTML = data.variables.map(v => `
@@ -717,18 +1240,33 @@
                 </div>
             `).join('');
 
-            // Render Framework (Grid mapping Table beside SVG Diagram)
+            // Render Framework
             if (data.conceptual_framework) {
-                let fwHTML = `<p class="text-sm text-slate-600 mb-6 leading-relaxed">${data.conceptual_framework.narrative}</p>`;
-                
+                let fwHTML = '';
+                if (data.conceptual_framework.research_context) {
+                    fwHTML += `
+                    <div class="mb-6 p-5 rounded-xl bg-indigo-50/50 border border-indigo-100/80">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-700 mb-2 flex items-center gap-1.5">
+                            <i class="fas fa-info-circle"></i> Research Context & Background
+                        </h3>
+                        <p class="text-sm text-slate-700 leading-relaxed text-justify">${data.conceptual_framework.research_context}</p>
+                    </div>`;
+                }
+
+                fwHTML += `
+                <div class="mb-4">
+                    <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-project-diagram text-indigo-600"></i> Conceptual Framework and Research Context
+                    </h3>
+                </div>`;
+
+                fwHTML += `<p class="text-sm text-slate-600 mb-6 leading-relaxed text-justify">${data.conceptual_framework.narrative}</p>`;
                 fwHTML += `
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                    <!-- Diagram Side -->
                     <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center justify-center relative min-h-[350px]">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 self-start"><i class="fas fa-project-diagram mr-1"></i> Visual Relationship Map</h3>
                         <div id="frameworkDiagramContainer" class="w-full h-full min-h-[300px] flex items-center justify-center"></div>
                     </div>
-                    <!-- Table Side -->
                     <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
                         <table class="w-full text-sm text-left">
                             <thead class="bg-slate-50 text-slate-600 text-xs uppercase border-b border-slate-200">
@@ -750,10 +1288,146 @@
                 </div>`;
                 
                 frameworkContent.innerHTML = fwHTML;
-                
-                // Draw the SVG diagram
                 drawFrameworkDiagram(data);
             }
+
+            // Render Nature style Project Management Summary
+            if (data.project_management) {
+                projectManagementContent.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                        <div class="bg-pink-50/40 border border-pink-100 p-4 rounded-xl">
+                            <h3 class="font-bold text-slate-800 border-b pb-2 mb-2 flex items-center gap-1.5">
+                                <i class="fas fa-sitemap text-pink-600"></i> Governance & Coordination
+                            </h3>
+                            <p class="text-slate-600 leading-relaxed text-xs text-justify">${data.project_management.governance}</p>
+                        </div>
+                        <div class="bg-emerald-50/40 border border-emerald-100 p-4 rounded-xl">
+                            <h3 class="font-bold text-slate-800 border-b pb-2 mb-2 flex items-center gap-1.5">
+                                <i class="fas fa-check-double text-emerald-600"></i> Quality Control & Assurance
+                            </h3>
+                            <p class="text-slate-600 leading-relaxed text-xs text-justify">${data.project_management.quality_control}</p>
+                        </div>
+                        <div class="bg-amber-50/40 border border-amber-100 p-4 rounded-xl">
+                            <h3 class="font-bold text-slate-800 border-b pb-2 mb-2 flex items-center gap-1.5">
+                                <i class="fas fa-shield-alt text-amber-600"></i> Risk & Mitigation Strategies
+                            </h3>
+                            <p class="text-slate-600 leading-relaxed text-xs text-justify">${data.project_management.risks}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Render Gantt Timeline
+            if (data.gantt_tasks) {
+                let ganttHTML = `
+                    <div class="min-w-[1000px] space-y-4">
+                        <!-- Months Header row -->
+                        <div class="grid border-b pb-2 text-center text-[10px] font-bold text-slate-400 tracking-wider" style="grid-template-columns: minmax(150px, 4fr) repeat(${currentProjectDuration}, minmax(12px, 1fr))">
+                            <div class="text-left pl-2">TASK NAME</div>
+                            ${Array.from({length: currentProjectDuration}, (_, i) => `<div>M${i+1}</div>`).join('')}
+                        </div>
+                        <div class="space-y-3">
+                `;
+
+                data.gantt_tasks.forEach((task) => {
+                    const start = Math.max(1, Math.min(currentProjectDuration, task.start_month));
+                    const end = Math.max(start, Math.min(currentProjectDuration, task.end_month));
+                    
+                    let phaseColor = 'bg-teal-500';
+                    if (task.phase.toLowerCase().includes('setup') || task.phase.toLowerCase().includes('prep')) phaseColor = 'bg-blue-500';
+                    else if (task.phase.toLowerCase().includes('analysis') || task.phase.toLowerCase().includes('eval')) phaseColor = 'bg-amber-500';
+                    else if (task.phase.toLowerCase().includes('report') || task.phase.toLowerCase().includes('disseminate')) phaseColor = 'bg-purple-500';
+
+                    ganttHTML += `
+                        <div class="grid items-center py-1.5 border-b border-slate-100 last:border-0 hover:bg-slate-50/50 rounded-lg" style="grid-template-columns: minmax(150px, 4fr) repeat(${currentProjectDuration}, minmax(12px, 1fr))">
+                            <div class="pl-2">
+                                <span class="block text-xs font-semibold text-slate-700 truncate" title="${task.task_name}">${task.task_name}</span>
+                                <span class="inline-block text-[8px] uppercase tracking-wide px-1.5 py-0.25 bg-slate-100 text-slate-500 font-medium rounded-full">${task.phase}</span>
+                            </div>
+                            <div class="relative h-6 flex items-center" style="grid-column: span ${currentProjectDuration};">
+                    `;
+
+                    // Generate month slots
+                    for (let m = 1; m <= currentProjectDuration; m++) {
+                        ganttHTML += `<div class="border-r border-slate-100/50 h-full w-full"></div>`;
+                    }
+
+                    // Absolute bar positioning calculation
+                    const spanWidth = ((end - start + 1) / currentProjectDuration) * 100;
+                    const leftPos = ((start - 1) / currentProjectDuration) * 100;
+
+                    ganttHTML += `
+                                <div class="absolute h-4 rounded-full ${phaseColor} opacity-90 shadow-sm flex items-center justify-center text-[8px] font-bold text-white px-2 truncate transition-all duration-300" 
+                                     style="left: calc(${leftPos}% + 2px); width: calc(${spanWidth}% - 4px);"
+                                     title="${task.task_name}: Months ${start}-${end}">
+                                    M${start}-M${end}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                ganttHTML += `</div></div>`;
+                ganttTimelineContent.innerHTML = ganttHTML;
+            }
+
+            // Render Dissemination & Broad Impact Plan
+            if (data.dissemination_impact) {
+                disseminationContent.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                        <div class="p-4 bg-slate-50/50 border border-slate-150 rounded-xl flex gap-3">
+                            <div class="p-3 bg-red-100 text-red-600 rounded-xl h-fit"><i class="fas fa-print text-lg"></i></div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm mb-1">Open Access & Publishing Strategy</h3>
+                                <p class="text-slate-600 text-xs leading-relaxed text-justify">${data.dissemination_impact.publishing_strategy}</p>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50/50 border border-slate-150 rounded-xl flex gap-3">
+                            <div class="p-3 bg-indigo-100 text-indigo-600 rounded-xl h-fit"><i class="fas fa-users text-lg"></i></div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm mb-1">Broader Social & Scientific Impacts</h3>
+                                <p class="text-slate-600 text-xs leading-relaxed text-justify">${data.dissemination_impact.broader_impacts}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Render Research Environment
+            if (data.research_environment && researchEnvironmentContent) {
+                researchEnvironmentContent.innerHTML = `
+                    <div class="p-5 bg-indigo-50/20 border border-indigo-100 rounded-xl flex gap-3 text-sm">
+                        <div class="p-3 bg-indigo-100 text-indigo-600 rounded-xl h-fit"><i class="fas fa-university text-lg"></i></div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm mb-2">Institutional Capabilities & Facilities Fit</h3>
+                            <p class="text-slate-600 text-xs leading-relaxed text-justify">${data.research_environment}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Populate Dynamic Budget values
+            if (data.recommended_budget) {
+                document.getElementById('budgetPersonnel').value = data.recommended_budget.personnel || 0;
+                document.getElementById('budgetEquipment').value = data.recommended_budget.equipment || 0;
+                document.getElementById('budgetConsumables').value = data.recommended_budget.consumables || 0;
+                document.getElementById('budgetTravel').value = data.recommended_budget.travel || 0;
+                document.getElementById('budgetPublications').value = data.recommended_budget.publications || 0;
+                document.getElementById('budgetIndirect').value = data.recommended_budget.indirect || 0;
+                recalculateAndVerifyBudget();
+            }
+
+            // Populate Budget Justification
+            const budgetJustificationContent = document.getElementById('budgetJustificationContent');
+            if (budgetJustificationContent) {
+                budgetJustificationContent.innerHTML = `<p class="text-justify leading-relaxed">${data.budget_justification || 'Budget justification pending...'}</p>`;
+            }
+
+            // Enable dynamic recalculations on input
+            document.querySelectorAll('.budget-input').forEach(input => {
+                input.removeEventListener('input', recalculateAndVerifyBudget);
+                input.addEventListener('input', recalculateAndVerifyBudget);
+            });
 
             document.getElementById('downloadWordBtn').classList.remove('hidden');
             document.getElementById('generateLitReviewBtn').classList.remove('hidden');
@@ -765,12 +1439,190 @@
             resultsContainer.classList.remove('hidden');
             resultsContainer.classList.add('flex');
 
-            // Reset Generate button text to allow starting a new project
             generateBtn.disabled = false;
             generateBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Start New Project';
         }
 
-        // Dynamic SVG Conceptual Framework Diagram Builder
+        function recalculateAndVerifyBudget() {
+            const personnel = parseFloat(document.getElementById('budgetPersonnel').value) || 0;
+            const equipment = parseFloat(document.getElementById('budgetEquipment').value) || 0;
+            const consumables = parseFloat(document.getElementById('budgetConsumables').value) || 0;
+            const travel = parseFloat(document.getElementById('budgetTravel').value) || 0;
+            const publications = parseFloat(document.getElementById('budgetPublications').value) || 0;
+            const indirect = parseFloat(document.getElementById('budgetIndirect').value) || 0;
+
+            const totalDirect = personnel + equipment + consumables + travel + publications;
+            const maxIndirect = totalDirect * 0.10;
+            const grandTotal = totalDirect + indirect;
+
+            document.getElementById('displayDirectTotal').textContent = `$${totalDirect.toLocaleString()}`;
+            document.getElementById('displayIndirect').textContent = `$${indirect.toLocaleString()}`;
+            document.getElementById('displayGrandTotal').textContent = `$${grandTotal.toLocaleString()}`;
+            document.getElementById('maxIndirectLabel').textContent = `Max Allowed: $${Math.floor(maxIndirect).toLocaleString()}`;
+
+            const alertsContainer = document.getElementById('budgetAlerts');
+            alertsContainer.innerHTML = '';
+            let valid = true;
+
+            if (totalDirect > 100000) {
+                valid = false;
+                alertsContainer.innerHTML += `
+                    <div class="p-3 bg-red-50 text-red-700 border border-red-200 text-xs rounded-xl flex items-center gap-2 animate-pulse">
+                        <i class="fas fa-exclamation-circle text-sm text-red-500"></i>
+                        <span><strong>Limit Exceeded:</strong> Total direct costs ($${totalDirect.toLocaleString()}) exceed the $100,000 threshold.</span>
+                    </div>
+                `;
+                document.getElementById('displayDirectTotal').className = "text-2xl font-black text-red-600";
+            } else {
+                document.getElementById('displayDirectTotal').className = "text-2xl font-black text-slate-800";
+            }
+
+            if (indirect > maxIndirect) {
+                valid = false;
+                alertsContainer.innerHTML += `
+                    <div class="p-3 bg-red-50 text-red-700 border border-red-200 text-xs rounded-xl flex items-center gap-2 animate-pulse">
+                        <i class="fas fa-exclamation-circle text-sm text-red-500"></i>
+                        <span><strong>Overhead Limit Exceeded:</strong> Indirect costs ($${indirect.toLocaleString()}) exceed 10% of direct costs.</span>
+                    </div>
+                `;
+                document.getElementById('displayIndirect').className = "text-2xl font-black text-red-600";
+            } else {
+                document.getElementById('displayIndirect').className = "text-2xl font-black text-indigo-700";
+            }
+
+            return valid;
+        }
+
+        function drawRoundRect(ctx, x, y, width, height, radius, fill, stroke) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            if (fill) {
+                ctx.fillStyle = fill;
+                ctx.fill();
+            }
+            if (stroke) {
+                ctx.strokeStyle = stroke;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+        }
+
+        function wrapTextOnCanvas(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            let currentY = y;
+            for(let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + ' ';
+                let metrics = ctx.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    ctx.fillText(line, x, currentY);
+                    line = words[n] + ' ';
+                    currentY += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line, x, currentY);
+        }
+
+        function drawObjectiveMethodologyCanvas(canvasId, steps, index, objectiveStatement) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 800, 250);
+
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, 800, 50);
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.beginPath();
+            ctx.moveTo(0, 50);
+            ctx.lineTo(800, 50);
+            ctx.stroke();
+
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 13px sans-serif';
+            ctx.fillText(`METHODOLOGY PIPELINE: OBJECTIVE ${index + 1}`, 20, 31);
+
+            const totalSteps = 3;
+            const boxWidth = 200;
+            const boxHeight = 125;
+            const spacing = 60;
+            const startX = 30;
+            const startY = 80;
+
+            const activeSteps = (steps && steps.length > 0) ? steps : ["Configure Parameters", "Perform Sample Testing", "Statistical Evaluation"];
+
+            for (let i = 0; i < totalSteps; i++) {
+                const bx = startX + i * (boxWidth + spacing);
+                const by = startY;
+
+                drawRoundRect(ctx, bx, by, boxWidth, boxHeight, 8, '#eff6ff', '#3b82f6');
+
+                ctx.fillStyle = '#1e40af';
+                ctx.font = 'bold 10px sans-serif';
+                ctx.fillText(`PHASE ${i + 1}`, bx + 15, by + 25);
+
+                ctx.fillStyle = '#334155';
+                ctx.font = 'normal 10.5px sans-serif';
+                wrapTextOnCanvas(ctx, activeSteps[i] || "N/A", bx + 15, by + 48, boxWidth - 30, 16);
+
+                ctx.beginPath();
+                ctx.arc(bx + boxWidth - 20, by + 22, 10, 0, 2 * Math.PI);
+                ctx.fillStyle = '#3b82f6';
+                ctx.fill();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 9px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${i + 1}`, bx + boxWidth - 20, by + 25);
+                ctx.textAlign = 'left';
+
+                if (i < totalSteps - 1) {
+                    const lineStartX = bx + boxWidth;
+                    const lineEndX = lineStartX + spacing;
+                    const arrowY = by + boxHeight / 2;
+
+                    ctx.strokeStyle = '#cbd5e1';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(lineStartX + 5, arrowY);
+                    ctx.lineTo(lineEndX - 10, arrowY);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(lineEndX - 5, arrowY);
+                    ctx.lineTo(lineEndX - 14, arrowY - 5);
+                    ctx.lineTo(lineEndX - 14, arrowY + 5);
+                    ctx.closePath();
+                    ctx.fillStyle = '#cbd5e1';
+                    ctx.fill();
+                }
+            }
+        }
+
+        function downloadObjectiveFig(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = dataUrl;
+            link.click();
+        }
+
         function drawFrameworkDiagram(data) {
             const container = document.getElementById('frameworkDiagramContainer');
             if (!container) return;
@@ -778,21 +1630,17 @@
             const variables = data.variables || [];
             const visualMap = (data.conceptual_framework && data.conceptual_framework.visual_map) || [];
 
-            // Gather all nodes in relationship map
             const nodeSet = new Set();
             visualMap.forEach(link => {
                 if (link.from_variable) nodeSet.add(link.from_variable.trim());
                 if (link.to_variable) nodeSet.add(link.to_variable.trim());
             });
             
-            // Fallback: If map is empty, pull standard variables
             if (nodeSet.size === 0) {
                 variables.forEach(v => nodeSet.add(v.name.trim()));
             }
 
             const nodeNames = Array.from(nodeSet);
-
-            // Group nodes into three structural columns for alignment (Left, Middle, Right)
             const colLeft = [];
             const colMiddle = [];
             const colRight = [];
@@ -810,7 +1658,6 @@
                 }
             });
 
-            // Adjust layout if one tier is empty
             if (colLeft.length === 0 && nodeNames.length > 0) colLeft.push(nodeNames[0]);
             if (colRight.length === 0 && nodeNames.length > 1) colRight.push(nodeNames[nodeNames.length - 1]);
             nodeNames.forEach(name => {
@@ -819,7 +1666,6 @@
                 }
             });
 
-            // Set dynamic canvas coordinates
             const width = 600;
             const height = 340;
             const coords = {};
@@ -841,7 +1687,6 @@
             const halfW = nodeWidth / 2;
             const halfH = nodeHeight / 2;
 
-            // Generate responsive SVG text stream
             let svgContent = `
             <svg viewBox="0 0 ${width} ${height}" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -854,7 +1699,6 @@
                 </defs>
             `;
 
-            // Draw link connections
             visualMap.forEach((link, idx) => {
                 const start = coords[link.from_variable.trim()];
                 const end = coords[link.to_variable.trim()];
@@ -876,16 +1720,13 @@
                         endY += start.y < end.y ? -halfH : halfH;
                     }
 
-                    // Cubic Bezier curve offsets
                     const cp1X = startX + (endX - startX) * 0.4;
                     const cp1Y = startY;
                     const cp2X = startX + (endX - startX) * 0.6;
                     const cp2Y = endY;
 
-                    // Connector Path
                     svgContent += `<path d="M ${startX} ${startY} C ${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}" fill="none" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrow)" />`;
 
-                    // Midpoint relationship label
                     if (link.relationship) {
                         const midX = (startX + endX) / 2;
                         const midY = (startY + endY) / 2;
@@ -902,7 +1743,6 @@
                 }
             });
 
-            // Helper to split text labels gracefully inside nodes
             const wrapText = (text, limit = 15) => {
                 const words = text.split(' ');
                 const lines = [];
@@ -919,7 +1759,6 @@
                 return lines.slice(0, 3);
             };
 
-            // Render Nodes
             nodeNames.forEach(name => {
                 const coord = coords[name];
                 if (!coord) return;
@@ -955,13 +1794,10 @@
                 svgContent += `
                 <g transform="translate(${x}, ${y})" filter="url(#shadow)">
                     <rect width="${nodeWidth}" height="${nodeHeight}" rx="8" fill="${bgColor}" stroke="${strokeColor}" stroke-width="1.5" />
-                    
-                    <!-- Node Category Badge -->
                     <g transform="translate(6, 6)">
                         <rect width="22" height="11" rx="3" fill="${strokeColor}" opacity="0.12" />
                         <text x="11" y="8" font-size="7" font-weight="bold" fill="${strokeColor}" text-anchor="middle" font-family="Inter, sans-serif">${badgeText}</text>
                     </g>
-
                     <text x="${nodeWidth / 2}" y="${nodeHeight / 2 + 3}" font-family="Inter, sans-serif" font-size="9" font-weight="600" fill="${textColor}" text-anchor="middle">
                 `;
 
@@ -993,47 +1829,84 @@
             const litBtn = document.getElementById('generateLitReviewBtn');
             const litContainer = document.getElementById('literatureReviewContainer');
             const litContent = document.getElementById('literatureReviewContent');
+            const sourcesBox = document.getElementById('litGroundedSourcesBox');
+            const sourcesList = document.getElementById('litGroundedSourcesList');
 
             litBtn.disabled = true;
-            litBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-lg"></i> Generating Review...';
+            litBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-lg"></i> Activating Grounded Perplexity Engine...';
 
             const objectivesText = currentGeneratedData.objectives.map((o, i) => `${i+1}. ${o.statement}`).join('\n');
             const topic = document.getElementById('topicInput').value.trim();
             
             const promptText = `
+                Perform a professional literature synthesis and Gap Analysis regarding this research topic:
                 Topic: "${topic}"
                 Based on the following research objectives:
                 ${objectivesText}
 
-                Task: Write a comprehensive, highly academic literature review based on current verified scientific literature.
-                1. Synthesize literature specifically addressing these objectives.
-                2. Use bracketed in-text citations (e.g., [1], [2]) for every factual claim.
-                3. Include a "References" list at the end matching the citations.
-                4. Format strictly in clean HTML tags (<h3>, <p>, <ul>, <strong>). No markdown.
+                Structure requirements:
+                1. Comprehensive, lengthy Literature Review summarizing historical and recent research up to the year 2026.
+                2. Explicitly address each objective with deep analytical context.
+                3. Perform a critical, detailed "KNOWLEDGE GAP ANALYSIS" explaining precisely what is missing in current literature (e.g., sample size limits, lack of mechanistic insights, narrow cohorts) and why this specific proposed project is urgently needed to fill this scientific void.
+                4. Create an academic, grounded References section at the end formatted strictly as an HTML ordered list (<ol> containing <li> tags) so that the references are explicitly and sequentially numbered (e.g., 1., 2., 3., etc.). Each entry in this list must be formatted in strict APA 7th Edition style, ensuring that every reference includes its actual or realistic DOI (formatted as a clickable link: https://doi.org/10.xxxx/xxxxx).
+                5. CRITICAL ORDERING RULE: Use sequential numerical brackets for in-text citations (e.g., [1], [2], [3]). The citations in the text must be numbered sequentially based on their order of appearance (the first unique source cited in the text must be [1], the second unique source must be [2], and so on). The final numbered References list MUST be sorted in the exact order of their first appearance in the text. This means the reference corresponding to [1] must be the first item in the list, [2] must be the second, and so on. Do not use alphabetic sorting.
+                
+                Formatting requirement: Output ONLY clean academic HTML code containing headings (<h3>, <h4>), paragraphs (<p>), ordered lists (<ol>, <li>) for the numbered references, bullet lists (<ul>, <li>), and tables (<table>) for the gap analysis comparison. Do not output raw markdown blocks.
             `;
 
-            const payloadSchema = { type: "OBJECT", properties: { literature_review_html: { type: "STRING" } } };
+            const systemInstruction = "You are a world-class academic scientist and meta-analyst. Utilize the Google Search grounding tools to cross-reference actual scientific papers and write a lengthy, comprehensive, and citation-rich literature review with proper gap analysis. In-text citations must use numerical brackets [1], [2] in sequential order of appearance. The reference list MUST be formatted in strict APA 7th Edition style, presented as an HTML ordered list (<ol>), and ordered exactly according to the sequence of appearance of the citations in the text.";
 
             try {
-                const result = await fetchWithRetry(promptText, "You are an expert academic researcher. Output strictly valid JSON containing HTML.", payloadSchema);
+                // Call fetch with search grounding enabled
+                const result = await fetchWithRetry(promptText, systemInstruction, null, true, 5);
                 const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (!rawText) throw new Error("Invalid response format received from Gemini.");
+                if (!rawText) throw new Error("Invalid response format received from Perplexity Grounding engine.");
 
-                const data = JSON.parse(rawText);
-                currentLiteratureReview = data.literature_review_html;
+                // Save review html
+                currentLiteratureReview = rawText;
                 litContent.innerHTML = currentLiteratureReview;
-                litContainer.classList.remove('hidden');
 
-                litBtn.innerHTML = '<i class="fas fa-check-circle text-lg"></i> Review Generated';
+                // Extract search grounding sources (Perplexity style)
+                let sources = [];
+                const groundingMetadata = result.candidates?.[0]?.groundingMetadata;
+                if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                    sources = groundingMetadata.groundingAttributions
+                        .map(attr => ({
+                            uri: attr.web?.uri,
+                            title: attr.web?.title || attr.web?.uri
+                        }))
+                        .filter(s => s.uri && s.title);
+                }
+
+                // Render dynamic citation source cards if available
+                if (sources.length > 0) {
+                    sourcesList.innerHTML = sources.slice(0, 6).map((source, idx) => `
+                        <a href="${source.uri}" target="_blank" class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-colors shadow-sm truncate">
+                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs shrink-0">${idx + 1}</div>
+                            <div class="truncate text-left">
+                                <p class="text-xs font-semibold text-slate-800 truncate" title="${source.title}">${source.title}</p>
+                                <p class="text-[9px] text-slate-400 font-mono truncate">${source.uri}</p>
+                            </div>
+                        </a>
+                    `).join('');
+                    sourcesBox.classList.remove('hidden');
+                } else {
+                    sourcesBox.classList.add('hidden');
+                }
+
+                litContainer.classList.remove('hidden');
+                litBtn.innerHTML = '<i class="fas fa-check-circle text-lg"></i> Grounded Review Ready';
                 litBtn.classList.replace('bg-emerald-600', 'bg-green-600');
+                
                 setTimeout(() => {
                     litBtn.disabled = false;
-                    litBtn.innerHTML = '<i class="fas fa-sync-alt text-lg"></i> Regenerate Review';
+                    litBtn.innerHTML = '<i class="fas fa-sync-alt text-lg"></i> Regenerate Grounded Review';
                     litBtn.classList.replace('bg-green-600', 'bg-emerald-600');
                 }, 3000);
+
             } catch (err) {
                 console.error(err);
-                let msg = err.message.includes("API_KEY_REJECTED") ? "Invalid API Key" : "Generation Failed";
+                let msg = err.message.includes("API_KEY_REJECTED") ? "Invalid API Key" : "Grounded Review Failed";
                 litBtn.innerHTML = `<i class="fas fa-exclamation-triangle text-lg"></i> ${msg}`;
                 litBtn.disabled = false;
             }
@@ -1053,29 +1926,37 @@
             const objectivesText = currentGeneratedData.objectives.map((o, i) => `${i+1}. ${o.statement}`).join('\n');
             const variablesText = currentGeneratedData.variables.map(v => `${v.name} (${v.type}): Measured via ${v.measurement_tool}`).join('\n');
             const topic = document.getElementById('topicInput').value.trim();
+            const context = document.getElementById('contextInput').value.trim();
             
             const promptText = `
                 Topic: "${topic}"
-                Objectives:
+                Additional Context: "${context}"
+                Project Duration: ${currentProjectDuration} Months
+                
+                Objectives of Study:
                 ${objectivesText}
+                
                 Variables & Tools:
                 ${variablesText}
 
-                Task: Write a detailed academic Methodology section specifically designed to achieve these objectives and measure these variables.
-                1. Include Study Design, Population/Sample, Data Collection Procedures (using the specified tools), and Statistical Analysis Plan.
-                2. Use bracketed in-text citations (e.g., [1]) for standard protocols, measurement validations, or statistical techniques.
-                3. Include a "References" list at the end.
-                4. Format strictly in clean HTML tags (<h3>, <p>, <ul>, <strong>). No markdown.
+                Task: Write an exceptionally extensive, detailed, and rigorous academic Methodology section designed to achieve these objectives and measure these variables.
+                Structure into standard clinical subheadings (Design, Ethics, Eligibility, Sampling, Detailed Objective-Specific Procedural Workflow, Statistical Analysis Plan, and References).
+                Ensure every objective gets concrete, deep operational instructions mapped strictly to the overall project duration of ${currentProjectDuration} months. 
+                
+                CRITICAL ORDERING & CITATION RULE: Use sequential numerical brackets for in-text citations (e.g., [1], [2], [3]) throughout the methodology narrative. The citations in the text must be numbered sequentially based on their order of appearance (the first unique source cited in the text must be [1], the second unique source must be [2], and so on). 
+                Provide a comprehensive, detailed "References" section at the end. The reference list must be structured strictly as an HTML ordered list (<ol> containing <li> tags) so that they are explicitly and sequentially numbered (e.g., 1., 2., 3., etc.). 
+                The bibliography entries MUST be sorted in the exact order of their first appearance in the text. This means the reference corresponding to [1] must be the first item in the list, [2] must be the second, and so on. Every reference entry must be written in strict APA 7th Edition style and include its valid or realistic DOI link (formatted as https://doi.org/10.xxxx/xxxxx). Do not sort alphabetically.
+                Format strictly in clean HTML tags.
             `;
 
             const payloadSchema = { type: "OBJECT", properties: { methodology_html: { type: "STRING" } } };
 
             try {
-                const result = await fetchWithRetry(promptText, "You are an expert academic methodologist. Output strictly valid JSON containing HTML.", payloadSchema);
+                const result = await fetchWithRetry(promptText, "You are a world-class academic research methodologist and biostatistician. Use sequential numerical brackets [1], [2] in order of appearance for citations. The reference list must follow strict APA 7th Edition style with DOI links, structured as an HTML ordered list sorted exactly by text appearance order. Output strictly valid JSON containing HTML.", payloadSchema);
                 const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
                 if (!rawText) throw new Error("Invalid response format received from Gemini.");
 
-                const data = JSON.parse(rawText);
+                const data = cleanAndParseJSON(rawText);
                 currentMethodology = data.methodology_html;
                 methContent.innerHTML = currentMethodology;
                 methContainer.classList.remove('hidden');
@@ -1117,8 +1998,7 @@
                 Variables:
                 ${variablesText}
 
-                Task: Design a sequential, step-by-step experimental flowchart (a logical sequence from study start to data analysis).
-                Create between 4 to 8 high-level phases. Give each a clear title and a brief description of the actions taken in that step.
+                Task: Design a sequential, step-by-step experimental flowchart. Create between 4 to 8 high-level phases. Give each a clear title and a brief description of the actions taken in that step.
             `;
 
             const jsonSchema = {
@@ -1129,8 +2009,8 @@
                         items: {
                             type: "OBJECT",
                             properties: {
-                                title: { type: "STRING", description: "Short title of the step" },
-                                description: { type: "STRING", description: "Brief description of the actions in this step" }
+                                title: { type: "STRING" },
+                                description: { type: "STRING" }
                             }
                         }
                     }
@@ -1142,10 +2022,9 @@
                 const rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
                 if (!rawText) throw new Error("Invalid response format received from Gemini.");
 
-                const data = JSON.parse(rawText);
+                const data = cleanAndParseJSON(rawText);
                 currentFlowchartData = data.steps;
                 
-                // Render the UI timeline representation
                 let html = `<div class="relative border-l-2 border-sky-300 ml-4 md:ml-8 my-4 space-y-6">`;
                 currentFlowchartData.forEach((step, idx) => {
                     html += `
@@ -1179,14 +2058,26 @@
         function downloadFlowchartPPTX() {
             if (!currentGeneratedData) return;
 
-            let pres = new PptxGenJS();
+            let pres;
+            if (typeof pptxgen !== 'undefined') {
+                pres = new pptxgen();
+            } else if (typeof PptxGenJS !== 'undefined') {
+                pres = new PptxGenJS();
+            } else {
+                showError("PowerPoint generator library is not loaded. Please wait and try again.");
+                return;
+            }
+
+            const shapeRoundedRectangle = pres.shapes ? pres.shapes.ROUNDED_RECTANGLE : 'roundRect';
+            const shapeLine = pres.shapes ? pres.shapes.LINE : 'line';
+            const shapeDownArrow = pres.shapes ? pres.shapes.DOWN_ARROW : 'downArrow';
+
             pres.defineLayout({ name: 'A4Portrait', width: 8.27, height: 11.69 });
             pres.layout = 'A4Portrait';
             
-            // SLIDE 1: Experimental Flowchart (if generated)
+            // SLIDE 1: Experimental Flowchart
             if (currentFlowchartData && currentFlowchartData.length > 0) {
                 let slide1 = pres.addSlide();
-                
                 slide1.addText("Study Experimental Flowchart", { 
                     x: 0.5, y: 0.5, w: 7.27, h: 0.8, 
                     fontSize: 24, bold: true, color: '1e293b', align: 'center' 
@@ -1196,21 +2087,18 @@
                 const startY = 1.5;
                 const endY = 11.0; 
                 const totalH = endY - startY;
-                
                 const maxStepH = 1.2;
                 const stepH = Math.min((totalH / numSteps) * 0.7, maxStepH);
                 const gapH = (totalH - (numSteps * stepH)) / (numSteps - 1 || 1);
 
                 currentFlowchartData.forEach((step, i) => {
                     const y = startY + i * (stepH + gapH);
-
-                    slide1.addShape(pres.ShapeType.rect, {
+                    slide1.addShape(shapeRoundedRectangle, {
                         x: 1.135, y: y, w: 6.0, h: stepH,
                         fill: { color: 'f8fafc' },
                         line: { color: '0ea5e9', width: 2 },
                         rectRadius: 0.1
                     });
-
                     slide1.addText([
                         { text: `Step ${i + 1}: ${step.title}\n`, options: { fontSize: 13, bold: true, color: '0f172a' } },
                         { text: step.description, options: { fontSize: 10, color: '334155' } }
@@ -1220,21 +2108,16 @@
                     });
 
                     if (i < numSteps - 1) {
-                        slide1.addShape(pres.ShapeType.downArrow, {
-                            x: 4.035, 
-                            y: y + stepH + (gapH * 0.1), 
-                            w: 0.2, 
-                            h: gapH * 0.8,
-                            fill: { color: 'cbd5e1' },
-                            line: { color: '94a3b8' }
+                        slide1.addShape(shapeDownArrow, {
+                            x: 4.035, y: y + stepH + (gapH * 0.1), w: 0.2, h: gapH * 0.8,
+                            fill: { color: 'cbd5e1' }, line: { color: '94a3b8' }
                         });
                     }
                 });
             }
 
-            // SLIDE 2: Conceptual Framework (Visual Relationship Map)
+            // SLIDE 2: Conceptual Framework
             let slide2 = pres.addSlide();
-            
             slide2.addText("Conceptual Framework", { 
                 x: 0.5, y: 0.5, w: 7.27, h: 0.6, 
                 fontSize: 22, bold: true, color: '1e293b', align: 'center' 
@@ -1247,21 +2130,16 @@
             const variables = currentGeneratedData.variables || [];
             const visualMap = (currentGeneratedData.conceptual_framework && currentGeneratedData.conceptual_framework.visual_map) || [];
 
-            // Gather all nodes in relationship map
             const nodeSet = new Set();
             visualMap.forEach(link => {
                 if (link.from_variable) nodeSet.add(link.from_variable.trim());
                 if (link.to_variable) nodeSet.add(link.to_variable.trim());
             });
-            
-            // Fallback: If map is empty, pull standard variables
             if (nodeSet.size === 0) {
                 variables.forEach(v => nodeSet.add(v.name.trim()));
             }
 
             const nodeNames = Array.from(nodeSet);
-
-            // Group nodes into three structural columns for alignment (Left, Middle, Right)
             const colLeft = [];
             const colMiddle = [];
             const colRight = [];
@@ -1279,7 +2157,6 @@
                 }
             });
 
-            // Adjust layout if one tier is empty
             if (colLeft.length === 0 && nodeNames.length > 0) colLeft.push(nodeNames[0]);
             if (colRight.length === 0 && nodeNames.length > 1) colRight.push(nodeNames[nodeNames.length - 1]);
             nodeNames.forEach(name => {
@@ -1304,16 +2181,14 @@
             assignCoords(colMiddle, 300);
             assignCoords(colRight, 510);
 
-            // Proportional Scaling helpers for Slide dimensions (safe area starts y=1.8, height=8.5, width=7.07)
             const scaleX = (x) => 0.6 + (x / width) * 7.07;
             const scaleY = (y) => 1.8 + (y / height) * 8.5;
 
             const nodeW = 1.6;
             const nodeH = 0.8;
-            const halfW = 130 / 2; // match SVG dimensions for precise calculations
+            const halfW = 130 / 2;
             const halfH = 50 / 2;
 
-            // Draw line connections (relationships)
             visualMap.forEach((link) => {
                 const start = coords[link.from_variable.trim()];
                 const end = coords[link.to_variable.trim()];
@@ -1340,11 +2215,8 @@
                     const pptEndX = scaleX(endX);
                     const pptEndY = scaleY(endY);
 
-                    slide2.addShape(pres.ShapeType.line, {
-                        x: pptStartX,
-                        y: pptStartY,
-                        w: pptEndX - pptStartX,
-                        h: pptEndY - pptStartY,
+                    slide2.addShape(shapeLine, {
+                        x: pptStartX, y: pptStartY, w: pptEndX - pptStartX, h: pptEndY - pptStartY,
                         line: { color: '94a3b8', width: 2, endArrowType: 'triangle' }
                     });
 
@@ -1354,11 +2226,9 @@
                         const labelW = 1.1;
                         const labelH = 0.24;
                         
-                        slide2.addShape(pres.ShapeType.roundRect, {
+                        slide2.addShape(shapeRoundedRectangle, {
                             x: midX - (labelW / 2), y: midY - (labelH / 2), w: labelW, h: labelH,
-                            fill: { color: 'f8fafc' },
-                            line: { color: 'cbd5e1', width: 1 },
-                            rectRadius: 0.5
+                            fill: { color: 'f8fafc' }, line: { color: 'cbd5e1', width: 1 }, rectRadius: 0.5
                         });
                         slide2.addText(link.relationship.toLowerCase(), {
                             x: midX - (labelW / 2), y: midY - (labelH / 2), w: labelW, h: labelH,
@@ -1368,7 +2238,6 @@
                 }
             });
 
-            // Draw nodes (variables)
             nodeNames.forEach(name => {
                 const coord = coords[name];
                 if (!coord) return;
@@ -1400,34 +2269,93 @@
                 const px = scaleX(coord.x) - (nodeW / 2);
                 const py = scaleY(coord.y) - (nodeH / 2);
 
-                // Main Node shape
-                slide2.addShape(pres.ShapeType.roundRect, {
+                slide2.addShape(shapeRoundedRectangle, {
                     x: px, y: py, w: nodeW, h: nodeH,
-                    fill: { color: bgColorHex },
-                    line: { color: strokeColorHex, width: 1.5 },
-                    rectRadius: 0.1
+                    fill: { color: bgColorHex }, line: { color: strokeColorHex, width: 1.5 }, rectRadius: 0.1
                 });
-
-                // Small classification badge
-                slide2.addShape(pres.ShapeType.roundRect, {
+                slide2.addShape(shapeRoundedRectangle, {
                     x: px + 0.08, y: py + 0.08, w: 0.35, h: 0.18,
-                    fill: { color: strokeColorHex },
-                    line: { color: strokeColorHex, width: 0.5 },
-                    rectRadius: 0.05
+                    fill: { color: strokeColorHex }, line: { color: strokeColorHex, width: 0.5 }, rectRadius: 0.05
                 });
                 slide2.addText(badgeText, {
                     x: px + 0.08, y: py + 0.08, w: 0.35, h: 0.18,
                     fontSize: 7, bold: true, color: 'ffffff', align: 'center', valign: 'middle'
                 });
-
-                // Node Text
                 slide2.addText(name, {
                     x: px + 0.1, y: py + 0.2, w: nodeW - 0.2, h: nodeH - 0.25,
                     fontSize: 9, bold: true, color: textColorHex, align: 'center', valign: 'middle'
                 });
             });
 
-            pres.writeFile({ fileName: "ReOB_BME_Study_Design.pptx" });
+            // SLIDE 3: Gantt Chart/Timeline
+            if (currentGeneratedData.gantt_tasks && currentGeneratedData.gantt_tasks.length > 0) {
+                let slide3 = pres.addSlide();
+                slide3.addText(`${currentProjectDuration}-Month Project Timeline / Gantt Chart`, { 
+                    x: 0.5, y: 0.5, w: 7.27, h: 0.8, 
+                    fontSize: 22, bold: true, color: '1e293b', align: 'center' 
+                });
+
+                const leftLabelMargin = 2.0;
+                const timelineGridWidth = 5.27;
+                const topGridMargin = 2.0;
+                const bottomGridMargin = 10.5;
+                const gridStepX = timelineGridWidth / currentProjectDuration;
+
+                // Vertical background lines
+                for (let i = 0; i <= currentProjectDuration; i++) {
+                    const xPos = leftLabelMargin + (i * gridStepX);
+                    slide3.addShape(shapeLine, {
+                        x: xPos, y: topGridMargin, w: 0, h: bottomGridMargin - topGridMargin,
+                        line: { color: 'e2e8f0', width: 0.5, dashType: 'dash' }
+                    });
+                    
+                    if (i < currentProjectDuration) {
+                        const monthNum = i + 1;
+                        const labelInterval = currentProjectDuration > 36 ? 6 : (currentProjectDuration > 18 ? 3 : 2);
+                        if (monthNum === 1 || monthNum === currentProjectDuration || monthNum % labelInterval === 0) {
+                            slide3.addText(`M${monthNum}`, {
+                                x: xPos - (gridStepX / 2), y: topGridMargin - 0.3, w: gridStepX * 2, h: 0.25,
+                                fontSize: 6, bold: true, color: '94a3b8', align: 'center'
+                            });
+                        }
+                    }
+                }
+
+                const taskCount = currentGeneratedData.gantt_tasks.length;
+                const verticalHeightAvailable = bottomGridMargin - topGridMargin;
+                const rowHeight = Math.min(0.8, verticalHeightAvailable / taskCount);
+
+                currentGeneratedData.gantt_tasks.forEach((task, idx) => {
+                    const yPos = topGridMargin + (idx * rowHeight) + 0.1;
+                    const startMonth = Math.max(1, Math.min(currentProjectDuration, task.start_month));
+                    const endMonth = Math.max(startMonth, Math.min(currentProjectDuration, task.end_month));
+                    
+                    const blockLeft = leftLabelMargin + ((startMonth - 1) * gridStepX);
+                    const blockWidth = (endMonth - startMonth + 1) * gridStepX;
+
+                    slide3.addText(task.task_name, {
+                        x: 0.4, y: yPos, w: 1.5, h: rowHeight - 0.1,
+                        fontSize: 8, bold: true, color: '334155', valign: 'middle'
+                    });
+
+                    let taskFill = '0ea5e9';
+                    if (task.phase.toLowerCase().includes('setup') || task.phase.toLowerCase().includes('prep')) taskFill = '3b82f6';
+                    else if (task.phase.toLowerCase().includes('analysis')) taskFill = 'f59e0b';
+                    else if (task.phase.toLowerCase().includes('report')) taskFill = '8b5cf6';
+
+                    slide3.addShape(shapeRoundedRectangle, {
+                        x: blockLeft + 0.02, y: yPos + (rowHeight * 0.1), w: blockWidth - 0.04, h: rowHeight * 0.6,
+                        fill: { color: taskFill }, line: { color: taskFill, width: 0.5 }, rectRadius: 0.3
+                    });
+
+                    slide3.addText(`M${startMonth}-M${endMonth}`, {
+                        x: blockLeft, y: yPos + (rowHeight * 0.1), w: blockWidth, h: rowHeight * 0.6,
+                        fontSize: 6, bold: true, color: 'ffffff', align: 'center', valign: 'middle'
+                    });
+                });
+            }
+
+            pres.writeFile({ fileName: `ReOB_BME_Study_Design_Suite_${currentProjectDuration}M.pptx` });
         }
 
         function downloadAsWord() {
@@ -1436,56 +2364,69 @@
             let svgHtml = "";
             const diagramContainer = document.getElementById('frameworkDiagramContainer');
             if (diagramContainer && diagramContainer.querySelector('svg')) {
-                // Clone the SVG DOM node to manipulate it safely without altering the live UI
                 const svgClone = diagramContainer.querySelector('svg').cloneNode(true);
-                
-                // Set explicit dimensions instead of responsive classes for proper MS Word layout matching
                 svgClone.setAttribute("width", "600");
                 svgClone.setAttribute("height", "340");
                 svgClone.removeAttribute("class");
-                
-                // Serialize the modified XML back to standard string markup
                 svgHtml = svgClone.outerHTML;
-                
-                // Clean and simplify drop-shadow filters so Word parses paths cleanly without flattening to image
                 svgHtml = svgHtml.replace(/filter="url\(#shadow\)"/g, '');
                 svgHtml = svgHtml.replace(/<filter[\s\S]*?<\/filter>/g, '');
-                
-                // Map custom web fonts to universal standard fonts (Arial) for flawless text-box editing in Office
                 svgHtml = svgHtml.replace(/font-family="[^"]*"/g, 'font-family="Arial, Helvetica, sans-serif"');
-                
-                // Wrap in centered container div with page-break defense
                 svgHtml = `<div style="text-align: center; margin: 24px 0; page-break-inside: avoid; clear: both;">${svgHtml}</div>`;
             }
 
             let content = `
                 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                <head><meta charset='utf-8'><title>Research Objectives</title></head>
+                <head><meta charset='utf-8'><title>Research Objectives Study Protocol</title></head>
                 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
                     <h1 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">ReOB BME - Study Protocol</h1>
                     <p><strong>Topic:</strong> ${document.getElementById('topicInput').value || 'Provided Study Topic'}</p>
+                    <p><strong>Overall Project Duration:</strong> ${currentProjectDuration} Months</p>
                     <br>
-                    <h2 style="color: #10b981;">1. SMART Objectives</h2>
+
+                    <h2 style="color: #2563eb;">1. Summary Statement</h2>
+                    <div style="background-color: #f8fafc; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 20px; font-style: italic;">
+                        <p style="margin: 0; text-align: justify;">${currentGeneratedData.summary_statement || 'N/A'}</p>
+                    </div>
+
+                    <h2 style="color: #2563eb;">2. Research Project Summary</h2>
+                    <div style="margin-bottom: 25px; padding-left: 10px;">
+                        <p><strong>Context:</strong> ${currentGeneratedData.research_project_summary?.context || 'N/A'}</p>
+                        <p><strong>Objectives:</strong> ${currentGeneratedData.research_project_summary?.objectives || 'N/A'}</p>
+                        <p><strong>Research Design and Methodology:</strong> ${currentGeneratedData.research_project_summary?.methodology || 'N/A'}</p>
+                        <p><strong>Sample Size & Power Analysis:</strong> ${currentGeneratedData.research_project_summary?.sample_size || 'N/A'}</p>
+                        <p><strong>Project Team:</strong> ${currentGeneratedData.research_project_summary?.project_team || 'N/A'}</p>
+                        <p><strong>Dissemination and Impact Plan:</strong> ${currentGeneratedData.research_project_summary?.dissemination || 'N/A'}</p>
+                    </div>
+                    
+                    <h2 style="color: #10b981;">3. SMART Objectives & Research Questions</h2>
             `;
             
             currentGeneratedData.objectives.forEach((obj, i) => {
                 content += `
-                    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e5e7eb; border-radius: 8px;">
-                        <h3 style="margin-top: 0; color: #1e293b;">Objective ${i + 1}</h3>
+                    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; background-color: #ffffff;">
+                        <h3 style="margin-top: 0; color: #1e293b; font-size: 14px;">Objective ${i + 1}</h3>
                         <p><strong>Statement:</strong> ${obj.statement}</p>
-                        <ul style="list-style-type: square;">
+                        
+                        <div style="background-color: #eff6ff; padding: 10px; border-left: 4px solid #2563eb; margin: 10px 0; border-radius: 4px;">
+                            <p style="margin: 0; font-weight: bold; color: #1e40af; font-size: 12px;">Research Question:</p>
+                            <p style="margin: 5px 0 0 0; color: #1e3a8a; font-style: italic; font-size: 12px;">${obj.research_question || 'N/A'}</p>
+                        </div>
+
+                        <p style="margin: 5px 0;"><strong>SMART Metrics breakdown:</strong></p>
+                        <ul style="list-style-type: disc; margin-top: 5px; margin-bottom: 10px; padding-left: 20px; font-size: 12px; color: #475569;">
                             <li><strong>Specific:</strong> ${obj.specific}</li>
                             <li><strong>Measurable:</strong> ${obj.measurable}</li>
                             <li><strong>Achievable:</strong> ${obj.achievable}</li>
                             <li><strong>Relevant:</strong> ${obj.relevant}</li>
                             <li><strong>Time-bound:</strong> ${obj.time_bound}</li>
                         </ul>
-                        <p><em><strong>Supportive Reference:</strong> ${obj.supportive_reference}</em></p>
+                        <p style="margin: 5px 0; font-size: 11px; color: #64748b;"><em><strong>Supportive Rationale/Reference Context:</strong> ${obj.supportive_reference}</em></p>
                     </div>
                 `;
             });
 
-            content += `<br><h2 style="color: #0ea5e9;">2. Defined Variables</h2>`;
+            content += `<br><h2 style="color: #0ea5e9;">4. Defined Variables</h2>`;
             currentGeneratedData.variables.forEach(v => {
                 content += `
                     <div style="margin-bottom: 15px;">
@@ -1499,9 +2440,23 @@
             if (currentGeneratedData.conceptual_framework) {
                 content += `
                     <br>
-                    <h2 style="color: #6366f1;">3. Conceptual Framework</h2>
-                    <p>${currentGeneratedData.conceptual_framework.narrative}</p>
+                    <h2 style="color: #6366f1;">5. Conceptual Framework and Research Context</h2>
                 `;
+
+                if (currentGeneratedData.conceptual_framework.research_context) {
+                    content += `
+                        <div style="margin-bottom: 20px; padding: 15px; background-color: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 8px;">
+                            <h4 style="margin-top: 0; color: #4338ca;">Research Context & Background</h4>
+                            <p style="text-align: justify; margin-bottom: 0;">${currentGeneratedData.conceptual_framework.research_context}</p>
+                        </div>
+                    `;
+                }
+
+                content += `
+                    <h3 style="color: #1e293b; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">Conceptual Framework</h3>
+                `;
+
+                content += `<p style="text-align: justify;">${currentGeneratedData.conceptual_framework.narrative}</p>`;
 
                 if (svgHtml) {
                     content += `
@@ -1526,18 +2481,126 @@
                 }
             }
 
+            if (currentGeneratedData.project_management) {
+                content += `
+                    <br><h2 style="color: #db2777;">6. Project Management Summary (Nature Grant Style)</h2>
+                    <p><strong>Governance:</strong> ${currentGeneratedData.project_management.governance}</p>
+                    <p><strong>Quality Control:</strong> ${currentGeneratedData.project_management.quality_control}</p>
+                    <p><strong>Risk & Mitigation:</strong> ${currentGeneratedData.project_management.risks}</p>
+                `;
+            }
+
+            // Adaptive Gantt Grid rendering in Word (grouped into 3-month segments/Quarters)
+            if (currentGeneratedData.gantt_tasks) {
+                const totalQuarters = Math.ceil(currentProjectDuration / 3);
+                content += `
+                    <br><h2 style="color: #0d9488;">7. ${currentProjectDuration}-Month Project Timeline / Gantt Plan</h2>
+                    <p>Below is the visual timeline (organized by quarters) for project milestones and deliverables:</p>
+                    <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; border-color: #cbd5e1; font-size: 10px;">
+                        <tr style="background-color: #f8fafc; font-weight: bold; text-align: center;">
+                            <th style="text-align: left; width: 25%; padding: 6px;">Task Name / Phase</th>
+                `;
+                for (let q = 1; q <= totalQuarters; q++) {
+                    const startM = (q - 1) * 3 + 1;
+                    const endM = Math.min(currentProjectDuration, q * 3);
+                    content += `
+                        <th style="width: ${75 / totalQuarters}%;">Q${q}<br><span style="font-size:8px;font-weight:normal;color:#64748b;">M${startM}-${endM}</span></th>
+                    `;
+                }
+                content += `</tr>`;
+
+                currentGeneratedData.gantt_tasks.forEach(t => {
+                    const start = Math.max(1, Math.min(currentProjectDuration, t.start_month));
+                    const end = Math.max(start, Math.min(currentProjectDuration, t.end_month));
+                    
+                    const startQ = Math.ceil(start / 3);
+                    const endQ = Math.ceil(end / 3);
+
+                    let phaseColor = '#3b82f6';
+                    if (t.phase.toLowerCase().includes('analysis') || t.phase.toLowerCase().includes('eval')) phaseColor = '#f59e0b';
+                    else if (t.phase.toLowerCase().includes('report') || t.phase.toLowerCase().includes('disseminate')) phaseColor = '#8b5cf6';
+                    else if (t.phase.toLowerCase().includes('active') || t.phase.toLowerCase().includes('research')) phaseColor = '#0d9488';
+
+                    content += `<tr>
+                        <td style="text-align: left; font-weight: bold; padding: 6px;">
+                            ${t.task_name}<br>
+                            <span style="font-size: 8px; color: #64748b; font-weight: normal; text-transform: uppercase;">${t.phase} (M${start}-${end})</span>
+                        </td>`;
+                    for (let q = 1; q <= totalQuarters; q++) {
+                        if (q >= startQ && q <= endQ) {
+                            content += `<td style="background-color: ${phaseColor}; color: #ffffff; text-align: center; font-weight: bold; font-size: 8px;">Active</td>`;
+                        } else {
+                            content += `<td style="background-color: #ffffff;"></td>`;
+                        }
+                    }
+                    content += `</tr>`;
+                });
+                content += `</table>`;
+            }
+
+            if (currentGeneratedData.dissemination_impact) {
+                content += `
+                    <br><h2 style="color: #dc2626;">8. Dissemination & Broad Impact Plan</h2>
+                    <p><strong>Open Access Strategy:</strong> ${currentGeneratedData.dissemination_impact.publishing_strategy}</p>
+                    <p><strong>Broader Impacts:</strong> ${currentGeneratedData.dissemination_impact.broader_impacts}</p>
+                `;
+            }
+
+            if (currentGeneratedData.research_environment) {
+                content += `
+                    <br><h2 style="color: #4f46e5;">9. Research Environment & Institutional Fit</h2>
+                    <p style="text-align: justify; font-size: 12px; line-height: 1.5; color: #475569;">${currentGeneratedData.research_environment}</p>
+                `;
+            }
+
+            const personnel = parseFloat(document.getElementById('budgetPersonnel').value) || 0;
+            const equipment = parseFloat(document.getElementById('budgetEquipment').value) || 0;
+            const consumables = parseFloat(document.getElementById('budgetConsumables').value) || 0;
+            const travel = parseFloat(document.getElementById('budgetTravel').value) || 0;
+            const publications = parseFloat(document.getElementById('budgetPublications').value) || 0;
+            const indirect = parseFloat(document.getElementById('budgetIndirect').value) || 0;
+            const totalDirect = personnel + equipment + consumables + travel + publications;
+            const grandTotal = totalDirect + indirect;
+
+            content += `
+                <br><h2 style="color: #059669;">10. Project Financial Budget</h2>
+                <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; border-color: #cbd5e1; margin-top: 15px;">
+                    <tr style="background-color: #f8fafc; font-weight: bold;">
+                        <th style="text-align: left;">Budget Category</th>
+                        <th style="text-align: right;">Cost Request (USD)</th>
+                    </tr>
+                    <tr><td>Personnel / Salaries</td><td style="text-align: right;">$${personnel.toLocaleString()}</td></tr>
+                    <tr><td>Equipment Purchases</td><td style="text-align: right;">$${equipment.toLocaleString()}</td></tr>
+                    <tr><td>Lab Supplies & Consumables</td><td style="text-align: right;">$${consumables.toLocaleString()}</td></tr>
+                    <tr><td>Logistics & Travel</td><td style="text-align: right;">$${travel.toLocaleString()}</td></tr>
+                    <tr><td>Dissemination & Open Access Costs</td><td style="text-align: right;">$${publications.toLocaleString()}</td></tr>
+                    <tr style="background-color: #f1f5f9; font-weight: bold;">
+                        <td>Total Direct Cost Requests (Cap $100,000)</td>
+                        <td style="text-align: right;">$${totalDirect.toLocaleString()}</td>
+                    </tr>
+                    <tr><td>Institutional Indirect Overhead (Cap 10% of Direct)</td><td style="text-align: right; color:#4f46e5;">$${indirect.toLocaleString()}</td></tr>
+                    <tr style="background-color: #ecfdf5; font-weight: bold; font-size:14px;">
+                        <td>Total Overall Requested Project Funding</td>
+                        <td style="text-align: right; color:#10b981;">$${grandTotal.toLocaleString()}</td>
+                    </tr>
+                </table>
+                <br>
+                <h3 style="color: #059669;">Budget Justification</h3>
+                <p style="text-align: justify; font-size: 12px; line-height: 1.5; color: #475569;">${currentGeneratedData.budget_justification || 'N/A'}</p>
+            `;
+
             if (currentLiteratureReview) {
-                content += `<br><br><h2 style="color: #059669; border-bottom: 2px solid #059669; padding-bottom: 10px;">4. Literature Review</h2><div style="text-align: justify;">${currentLiteratureReview}</div>`;
+                content += `<br><br><h2 style="color: #059669; border-bottom: 2px solid #059669; padding-bottom: 10px;">11. Grounded Literature Review & Gap Analysis</h2><div style="text-align: justify;">${currentLiteratureReview}</div>`;
             }
 
             if (currentMethodology) {
-                content += `<br><br><h2 style="color: #d97706; border-bottom: 2px solid #d97706; padding-bottom: 10px;">5. Methodology</h2><div style="text-align: justify;">${currentMethodology}</div>`;
+                content += `<br><br><h2 style="color: #d97706; border-bottom: 2px solid #d97706; padding-bottom: 10px;">12. Methodology</h2><div style="text-align: justify;">${currentMethodology}</div>`;
             }
 
             if (currentFlowchartData && currentFlowchartData.length > 0) {
                 content += `
                     <br><br>
-                    <h2 style="color: #0ea5e9; border-bottom: 2px solid #0ea5e9; padding-bottom: 10px;">6. Experimental Flowchart</h2>
+                    <h2 style="color: #0ea5e9; border-bottom: 2px solid #0ea5e9; padding-bottom: 10px;">13. Experimental Flowchart</h2>
                     <table border="0" cellpadding="8" cellspacing="0" style="width:100%; border-collapse:collapse; margin-top:15px;">
                 `;
                 currentFlowchartData.forEach((step, idx) => {
@@ -1562,7 +2625,7 @@
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'ReOB_BME_Study_Protocol.doc';
+            link.download = `ReOB_BME_Project_Protocol_${currentProjectDuration}M.doc`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
