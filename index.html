@@ -75,7 +75,7 @@
 <body class="text-slate-800 min-h-screen flex flex-col">
 
     <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="max-w-[1440px] mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="bg-primary text-white p-2 rounded-lg">
                     <i class="fas fa-microscope text-xl"></i>
@@ -91,10 +91,10 @@
         </div>
     </header>
 
-    <main class="flex-grow max-w-6xl mx-auto w-full px-4 py-8 flex flex-col lg:flex-row gap-8">
+    <main class="flex-grow max-w-[1440px] mx-auto w-full px-4 py-8 flex flex-col lg:flex-row gap-8">
         
-        <!-- Input Section (Left Column) -->
-        <div class="w-full lg:w-1/3 flex flex-col gap-6">
+        <!-- Input Section (Left Column) - Fixed width preventing crowding -->
+        <div class="w-full lg:w-[360px] lg:shrink-0 flex flex-col gap-6">
             
             <!-- API Key & Model Configuration -->
             <div class="glass-panel rounded-2xl p-6 relative overflow-hidden border border-amber-200 bg-amber-50/30">
@@ -139,7 +139,7 @@
                 <div class="flex flex-col gap-4">
                     <div>
                         <label for="topicInput" class="block text-sm font-semibold text-slate-700 mb-1">Topic or Title of Study *</label>
-                        <textarea id="topicInput" rows="4" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none text-sm placeholder-slate-400" placeholder="e.g., The impact of intermittent fasting on HbA1c levels in adults with type 2 diabetes over 6 months..."></textarea>
+                        <textarea id="topicInput" rows="4" class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none text-sm placeholder-slate-400" placeholder="e.g., The impact of intermittent fasting on HbA1c levels in adults with type 2 diabetes over 12 months..."></textarea>
                     </div>
                     
                     <div>
@@ -198,9 +198,27 @@
             </div>
         </div>
 
-        <!-- Output Display Panel (Right Column) -->
-        <div class="w-full lg:w-2/3 flex flex-col gap-6">
+        <!-- Output Display Panel (Right Column) - Dynamically expands to maximize usable widescreen space -->
+        <div class="w-full lg:flex-grow lg:w-[calc(100%-392px)] flex flex-col gap-6">
             
+            <!-- Empty Welcome State Panel -->
+            <div id="emptyState" class="glass-panel rounded-2xl p-12 text-center flex flex-col items-center justify-center border border-slate-200 h-full min-h-[450px]">
+                <div class="w-16 h-16 bg-blue-50 text-primary rounded-full flex items-center justify-center mb-6 border border-blue-100 shadow-inner">
+                    <i class="fas fa-drafting-compass text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Study Protocol Architect</h3>
+                <p class="text-sm text-slate-500 max-w-lg leading-relaxed mb-6">
+                    Enter your research topic on the left and select your desired timeline plan. ReOB BME will dynamically design fully-aligned SMART objectives, variable structures, timelines, budgets, and customizable slides.
+                </p>
+                <div class="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-400 font-semibold">
+                    <span><i class="fas fa-check-circle text-primary mr-1"></i> Interactive Gantt</span>
+                    <span>•</span>
+                    <span><i class="fas fa-check-circle text-primary mr-1"></i> Dynamic Visual Map</span>
+                    <span>•</span>
+                    <span><i class="fas fa-check-circle text-primary mr-1"></i> Flowchart slide exporter</span>
+                </div>
+            </div>
+
             <!-- Loading State -->
             <div id="loadingState" class="hidden glass-panel rounded-2xl p-12 flex flex-col items-center justify-center text-center border border-slate-200 h-full min-h-[400px]">
                 <div class="relative w-20 h-20 mb-6">
@@ -208,303 +226,229 @@
                     <div class="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-spin"></div>
                     <i class="fas fa-brain absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-primary text-xl"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-800 mb-2" id="loadingTitle">Analyzing Academic Context...</h3>
-                <p class="text-sm text-slate-500 max-w-xs loading-pulse" id="loadingDesc">Consulting scientific literature, extracting variables, and drafting SMART objectives using Gemini.</p>
-            </div>
-
-            <!-- Empty State -->
-            <div id="emptyState" class="glass-panel rounded-2xl p-12 flex flex-col items-center justify-center text-center border border-slate-200 h-full min-h-[400px]">
-                <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6 text-slate-300">
-                    <i class="fas fa-file-contract text-4xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-slate-700 mb-2">Ready to Design</h3>
-                <p class="text-slate-500 max-w-md">Enter your study topic, select project duration, and trigger 'Generate Design' on the left to synthesize high-level academic frameworks.</p>
+                <h3 id="loadingTitle" class="text-lg font-bold text-slate-800 mb-2">Analyzing Academic Context...</h3>
+                <p id="loadingDesc" class="text-sm text-slate-500 max-w-md">Consulting literature, evaluating custom variables, and setting up protocol pipelines.</p>
             </div>
 
             <!-- Results Container -->
-            <div id="resultsContainer" class="hidden flex-col gap-6">
+            <div id="resultsContainer" class="hidden flex-col gap-8 w-full">
                 
-                <!-- Summary Statement Abstract Box -->
-                <div id="summaryStatementBox" class="glass-panel rounded-2xl overflow-hidden border border-slate-200 animate-fadeIn">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-star text-amber-500"></i> Summary Statement
-                        </h2>
+                <!-- Action Controls Bar -->
+                <div class="flex flex-wrap gap-3 items-center justify-between border-b pb-4 border-slate-200">
+                    <div class="flex items-center gap-2">
+                        <span class="px-3 py-1 bg-blue-100 text-blue-700 font-bold rounded-lg text-xs">READY TO RUN</span>
+                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wide">Analysis Suite Workspace</h3>
                     </div>
-                    <div class="p-6 bg-white" id="summaryStatementContent">
-                        <!-- Content injected here -->
-                    </div>
-                </div>
-
-                <!-- Research Project Summary -->
-                <div id="projectSummaryContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200 animate-fadeIn">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-file-alt text-primary"></i> Research Project Summary
-                        </h2>
-                    </div>
-                    <div class="p-6 bg-white space-y-6" id="projectSummaryContent">
-                        <!-- Content injected here -->
-                    </div>
-                </div>
-
-                <!-- Objectives Section -->
-                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-bullseye text-success"></i> SMART Objectives & Research Questions
-                        </h2>
-                        <button onclick="copyContent('objectivesList')" class="text-slate-400 hover:text-primary transition-colors" title="Copy Objectives">
-                            <i class="far fa-copy"></i>
+                    <div class="flex flex-wrap gap-2">
+                        <button id="generateLitReviewBtn" onclick="generateLiteratureReview()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-xs shadow-md shadow-emerald-500/20">
+                            <i class="fas fa-book-open"></i> Synthesize Lit Review (Perplexity Style)
+                        </button>
+                        <button id="generateMethodologyBtn" onclick="generateMethodology()" class="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-xs shadow-md shadow-amber-500/20">
+                            <i class="fas fa-file-contract"></i> Draft Full Methodology
+                        </button>
+                        <button id="generateFlowchartBtn" onclick="generateFlowchart()" class="bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-xs shadow-md shadow-sky-500/20">
+                            <i class="fas fa-network-wired"></i> Map Flowchart
+                        </button>
+                        <button id="downloadWordBtn" onclick="downloadAsWord()" class="bg-[#1b603a] hover:bg-[#13462a] text-white font-semibold py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-xs shadow-md shadow-emerald-700/20">
+                            <i class="fas fa-file-word"></i> Export Word Protocol (.doc)
                         </button>
                     </div>
-                    <div class="p-6">
-                        <div id="objectivesList" class="flex flex-col gap-4">
-                            <!-- Objectives injected here -->
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Variables Section -->
-                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-vials text-accent"></i> Defined Variables
-                        </h2>
-                        <button onclick="copyContent('variablesList')" class="text-slate-400 hover:text-primary transition-colors" title="Copy Variables">
-                            <i class="far fa-copy"></i>
+                <!-- Grounded Literature Review Container -->
+                <div id="literatureReviewContainer" class="hidden glass-panel rounded-2xl p-6 border-l-4 border-l-emerald-500">
+                    <div class="flex items-center justify-between border-b pb-3 mb-4">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-graduation-cap text-emerald-500"></i> Grounded Literature Review & Gap Analysis
+                        </h3>
+                        <button onclick="copyContent('literatureReviewContent')" class="text-slate-400 hover:text-slate-600 font-semibold text-xs border p-1.5 rounded-lg flex items-center gap-1">
+                            <i class="fas fa-copy"></i> Copy Section
                         </button>
-                    </div>
-                    <div class="p-6">
-                        <div id="variablesList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Variables injected here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Conceptual Framework & Context Panel -->
-                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-project-diagram text-indigo-500"></i> Conceptual Framework and Research Context
-                        </h2>
-                        <button onclick="copyContent('frameworkContent')" class="text-slate-400 hover:text-primary transition-colors" title="Copy Framework">
-                            <i class="far fa-copy"></i>
-                        </button>
-                    </div>
-                    <div class="p-6" id="frameworkContent">
-                        <!-- Framework injected here -->
                     </div>
                     
-                    <!-- Action Buttons Bar -->
-                    <div class="bg-slate-50 border-t border-slate-200 px-6 py-4 flex flex-wrap justify-end gap-3">
-                        <button onclick="generateLiteratureReview()" id="generateLitReviewBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-sm shadow-sm hidden">
-                            <i class="fas fa-book-reader text-lg"></i> Generate Literature Review
-                        </button>
-                        <button onclick="generateMethodology()" id="generateMethodologyBtn" class="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-sm shadow-sm hidden">
-                            <i class="fas fa-microscope text-lg"></i> Generate Methodology
-                        </button>
-                        <button onclick="generateFlowchart()" id="generateFlowchartBtn" class="bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-sm shadow-sm hidden">
-                            <i class="fas fa-project-diagram text-lg"></i> Generate Flowchart
-                        </button>
-                        <button onclick="downloadAsWord()" id="downloadWordBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-sm shadow-sm hidden">
-                            <i class="fas fa-file-word text-lg"></i> Download as Word Document
-                        </button>
+                    <!-- Grounded Perplexity Sources Grid -->
+                    <div id="litGroundedSourcesBox" class="hidden mb-6 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                            <i class="fas fa-globe text-emerald-500"></i> Grounded Research Bibliography citations
+                        </h4>
+                        <div id="litGroundedSourcesList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
                     </div>
+
+                    <div id="literatureReviewContent" class="generated-content text-sm text-slate-700 leading-relaxed text-justify space-y-4"></div>
                 </div>
 
-                <!-- Literature Review Window -->
-                <div id="literatureReviewContainer" class="hidden glass-panel rounded-2xl overflow-hidden border border-slate-200">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                        <div>
-                            <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fas fa-book-open text-emerald-600"></i> Grounded Literature Review & Gap Analysis
-                            </h2>
-                            <p class="text-[10px] text-slate-500 font-medium">Perplexity AI Grounding Method (Synthesized via Google Search)</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="copyContent('literatureReviewContent')" class="text-slate-400 hover:text-primary transition-colors p-2" title="Copy Literature Review">
-                                <i class="far fa-copy text-lg"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Source Chips Container -->
-                    <div id="litGroundedSourcesBox" class="hidden bg-slate-50 border-b border-slate-200 p-6">
-                        <h3 class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-3 flex items-center gap-1.5">
-                            <i class="fas fa-globe"></i> Grounded Search Sources (Perplexity Style)
+                <!-- Methodology Container -->
+                <div id="methodologyContainer" class="hidden glass-panel rounded-2xl p-6 border-l-4 border-l-amber-500">
+                    <div class="flex items-center justify-between border-b pb-3 mb-4">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-microscope text-amber-500"></i> Research Design and Operational Methods
                         </h3>
-                        <div id="litGroundedSourcesList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                            <!-- Dynamic Source Chips -->
-                        </div>
-                    </div>
-                    <div class="p-8 generated-content text-sm bg-white" id="literatureReviewContent">
-                        <!-- Lit Review injected here -->
-                    </div>
-                </div>
-
-                <!-- Methodology Window -->
-                <div id="methodologyContainer" class="hidden glass-panel rounded-2xl overflow-hidden border border-slate-200">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-flask text-amber-600"></i> Methodology
-                        </h2>
-                        <button onclick="copyContent('methodologyContent')" class="text-slate-400 hover:text-primary transition-colors" title="Copy Methodology">
-                            <i class="far fa-copy"></i>
+                        <button onclick="copyContent('methodologyContent')" class="text-slate-400 hover:text-slate-600 font-semibold text-xs border p-1.5 rounded-lg flex items-center gap-1">
+                            <i class="fas fa-copy"></i> Copy Section
                         </button>
                     </div>
-                    <div class="p-8 generated-content text-sm bg-white" id="methodologyContent">
-                        <!-- Methodology injected here -->
-                    </div>
+                    <div id="methodologyContent" class="generated-content text-sm text-slate-700 leading-relaxed text-justify space-y-4"></div>
                 </div>
 
-                <!-- Flowchart Window -->
-                <div id="flowchartContainer" class="hidden glass-panel rounded-2xl overflow-hidden border border-slate-200">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-sitemap text-sky-600"></i> Experimental Flowchart
-                        </h2>
-                        <button onclick="downloadFlowchartPPTX()" class="bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold py-1.5 px-3 rounded-lg transition-colors flex items-center gap-2 text-sm border border-blue-200" title="Download Editable PowerPoint">
-                            <i class="fas fa-file-powerpoint text-orange-600"></i> Download Editable PPTX
+                <!-- Experimental Flowchart Container -->
+                <div id="flowchartContainer" class="hidden glass-panel rounded-2xl p-6 border-l-4 border-l-sky-500">
+                    <div class="flex items-center justify-between border-b pb-3 mb-4">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-project-diagram text-sky-500"></i> Sequential Experimental Flowchart
+                        </h3>
+                        <button id="downloadFlowchartBtn" onclick="downloadFlowchartPPTX()" class="bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold py-1.5 px-3 rounded-lg border border-sky-200 transition-colors text-xs flex items-center gap-1 shadow-sm">
+                            <i class="fas fa-download"></i> Download Flowchart Slide (Editable PPTX)
                         </button>
                     </div>
-                    <div class="p-8 bg-white" id="flowchartContent">
-                        <!-- Flowchart injected here -->
+                    <div id="flowchartContent" class="generated-content text-sm text-slate-700 leading-relaxed space-y-4"></div>
+                </div>
+
+                <!-- Summary Statement / Executive Overview Card -->
+                <div class="glass-panel rounded-2xl p-6">
+                    <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-star text-amber-500"></i> Study Overview & Impact
+                    </h2>
+                    <div id="summaryStatementContent"></div>
+                    <div id="projectSummaryContent"></div>
+                </div>
+
+                <!-- Research Environment and Institutional Fit -->
+                <div class="glass-panel rounded-2xl p-6">
+                    <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-university text-indigo-500"></i> Institutional Fit & Facilities
+                    </h2>
+                    <div id="researchEnvironmentContent"></div>
+                </div>
+
+                <!-- SMART Objectives Card -->
+                <div class="glass-panel rounded-2xl p-6">
+                    <div class="flex items-center justify-between border-b pb-3 mb-4">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-tasks text-primary"></i> SMART Objectives & Operational Figures
+                        </h2>
+                        <button onclick="copyContent('objectivesList')" class="text-slate-400 hover:text-slate-600 font-semibold text-xs border p-1.5 rounded-lg flex items-center gap-1">
+                            <i class="fas fa-copy"></i> Copy List
+                        </button>
+                    </div>
+                    <div id="objectivesList" class="flex flex-col gap-6"></div>
+                </div>
+
+                <!-- Study Variables Panel -->
+                <div class="glass-panel rounded-2xl p-6">
+                    <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-dna text-success"></i> Defined Study Variables
+                    </h2>
+                    <div id="variablesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                </div>
+
+                <!-- Conceptual Framework Card -->
+                <div class="glass-panel rounded-2xl p-6">
+                    <div id="frameworkContent"></div>
+                </div>
+
+                <!-- Dynamic Timeline / Gantt Chart Card -->
+                <div class="glass-panel rounded-2xl p-6 overflow-hidden">
+                    <div class="flex items-center justify-between mb-4 border-b pb-3">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-calendar-alt text-teal-500"></i> Milestone Timeline Chart
+                        </h2>
+                        <span id="ganttTitleLabel" class="text-xs font-bold text-slate-500 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full">36-Month Project Timeline</span>
+                    </div>
+                    <div class="w-full overflow-x-auto">
+                        <div id="ganttTimelineContent"></div>
                     </div>
                 </div>
 
-                <!-- Project Management Summary Window -->
-                <div id="projectManagementContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-tasks text-pink-600"></i> Project Management Summary (Nature Grant Style)
-                        </h2>
-                    </div>
-                    <div class="p-6 bg-white space-y-4" id="projectManagementContent">
-                        <p class="text-slate-400 text-sm italic">Generated automatically upon clicking 'Generate Design'...</p>
-                    </div>
+                <!-- Project Management & Governance Card -->
+                <div class="glass-panel rounded-2xl p-6">
+                    <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-clipboard-check text-pink-500"></i> Project Management (Nature Grant Style)
+                    </h2>
+                    <div id="projectManagementContent"></div>
                 </div>
 
-                <!-- Visual Gantt Timeline / Calendar Section -->
-                <div id="ganttTimelineContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-calendar-alt text-teal-600"></i> <span id="ganttTitleLabel">36-Month Project Timeline</span> / Gantt Chart
-                        </h2>
-                        <span class="text-xs bg-teal-50 border border-teal-200 text-teal-700 px-2 py-1 rounded font-medium">Downloadable in PPTX</span>
-                    </div>
-                    <div class="p-6 bg-white overflow-x-auto" id="ganttTimelineContent">
-                        <p class="text-slate-400 text-sm italic">Pending study parameters generation...</p>
-                    </div>
+                <!-- Dissemination and Broad Impact Card -->
+                <div class="glass-panel rounded-2xl p-6">
+                    <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-bullhorn text-red-500"></i> Dissemination & Broad Impact
+                    </h2>
+                    <div id="disseminationContent"></div>
                 </div>
 
-                <!-- Dissemination and Impact Plan Section -->
-                <div id="disseminationContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-bullhorn text-red-500"></i> Dissemination & Broad Impact Plan
-                        </h2>
-                    </div>
-                    <div class="p-6 bg-white space-y-4" id="disseminationContent">
-                        <p class="text-slate-400 text-sm italic">Will generate based on study context and stakeholders...</p>
-                    </div>
-                </div>
-
-                <!-- Research Environment / Institutional Fit Section -->
-                <div id="researchEnvironmentContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200 animate-fadeIn">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-building text-indigo-600"></i> Research Environment & Institutional Fit
-                        </h2>
-                    </div>
-                    <div class="p-6 bg-white space-y-4" id="researchEnvironmentContent">
-                        <p class="text-slate-400 text-sm italic">Will generate based on study parameters and institutional fit...</p>
-                    </div>
-                </div>
-
-                <!-- Dynamic Interactive Budgeting Calculator Window -->
-                <div id="budgetContainer" class="glass-panel rounded-2xl overflow-hidden border border-slate-200">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fas fa-dollar-sign text-emerald-500"></i> Dynamic Project Budget Plan (12-Month Period)
-                        </h2>
-                        <div class="flex items-center gap-2 text-xs">
-                            <span class="font-bold text-slate-500">Direct Cost Cap:</span>
-                            <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold border border-emerald-300">$100,000</span>
-                        </div>
-                    </div>
-                    <div class="p-6 bg-white">
-                        <p class="text-xs text-slate-500 leading-relaxed mb-6">
-                            Customize the calculated values in US dollars. The direct budget must not exceed <strong>$100,000</strong>. Institutional overhead (Indirect Costs) is restricted to a maximum of <strong>10%</strong> of the total direct costs.
-                        </p>
+                <!-- Project Financial Budget Details & Planner -->
+                <div class="glass-panel rounded-2xl p-6">
+                    <h2 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-dollar-sign text-emerald-500"></i> Financial Budget Planner
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            <!-- Input Fields Category Left -->
-                            <div class="space-y-4">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b pb-1"><i class="fas fa-user-friends mr-1"></i> Personnel & Operations</h3>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Personnel / Researchers Salaries ($)</label>
-                                    <input type="number" id="budgetPersonnel" class="budget-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" value="0" min="0">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Equipment Purchase/Leasing ($)</label>
-                                    <input type="number" id="budgetEquipment" class="budget-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" value="0" min="0">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Lab Consumables & Supplies ($)</label>
-                                    <input type="number" id="budgetConsumables" class="budget-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" value="0" min="0">
+                        <!-- Inputs Panel -->
+                        <div class="lg:col-span-1 space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wide">Enter Direct Cost Values</h3>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Personnel / Salaries ($)</label>
+                                <input type="number" id="budgetPersonnel" class="budget-input w-full rounded-lg border border-slate-300 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-xs" value="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Equipment ($)</label>
+                                <input type="number" id="budgetEquipment" class="budget-input w-full rounded-lg border border-slate-300 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-xs" value="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Supplies & Consumables ($)</label>
+                                <input type="number" id="budgetConsumables" class="budget-input w-full rounded-lg border border-slate-300 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-xs" value="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Logistics & Travel ($)</label>
+                                <input type="number" id="budgetTravel" class="budget-input w-full rounded-lg border border-slate-300 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-xs" value="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Publications & Open Access ($)</label>
+                                <input type="number" id="budgetPublications" class="budget-input w-full rounded-lg border border-slate-300 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-xs" value="0">
+                            </div>
+                            <div class="border-t pt-3">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Indirect Overhead / Admin ($)</label>
+                                <div class="flex items-center gap-2 justify-between">
+                                    <input type="number" id="budgetIndirect" class="budget-input w-2/3 rounded-lg border border-slate-300 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-xs" value="0">
+                                    <span id="maxIndirectLabel" class="text-[9px] font-bold text-indigo-600 block leading-tight text-right w-1/3">Max Allowed: $0</span>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Outputs Dashboard & Budget Justification -->
+                        <div class="lg:col-span-2 flex flex-col gap-6">
                             
-                            <!-- Input Fields Category Right -->
-                            <div class="space-y-4">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b pb-1"><i class="fas fa-plane-departure mr-1"></i> Logistics & Overhead</h3>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Travel (Conferences, Fieldwork) ($)</label>
-                                    <input type="number" id="budgetTravel" class="budget-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" value="0" min="0">
+                            <!-- Financial Totals Panel -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-center">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Total Direct Costs</span>
+                                    <span id="displayDirectTotal" class="text-2xl font-black text-slate-800">$0</span>
+                                    <span class="text-[9px] text-slate-400 font-semibold mt-1">Cap: $100,000 Direct</span>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Publication & Dissemination ($)</label>
-                                    <input type="number" id="budgetPublications" class="budget-input w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" value="0" min="0">
+                                <div class="bg-indigo-50/50 border border-indigo-100 p-4 rounded-xl flex flex-col justify-center">
+                                    <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wide">Indirect Overhead</span>
+                                    <span id="displayIndirect" class="text-2xl font-black text-indigo-700">$0</span>
+                                    <span class="text-[9px] text-indigo-400 font-semibold mt-1">Cap: Max 10% of Direct</span>
                                 </div>
-                                <div>
-                                    <div class="flex justify-between items-center mb-1">
-                                        <label class="block text-xs font-semibold text-slate-600">Institutional Indirect Costs ($)</label>
-                                        <span id="maxIndirectLabel" class="text-[10px] text-indigo-600 font-bold">Max Allowed: $0</span>
-                                    </div>
-                                    <input type="number" id="budgetIndirect" class="budget-input w-full rounded-xl border border-indigo-200 bg-indigo-50/50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all font-semibold text-indigo-900" value="0" min="0">
+                                <div class="bg-emerald-50/50 border border-emerald-100 p-4 rounded-xl flex flex-col justify-center">
+                                    <span class="text-[10px] font-bold text-emerald-500 uppercase tracking-wide">Grand Funding Request</span>
+                                    <span id="displayGrandTotal" class="text-2xl font-black text-emerald-600">$0</span>
+                                    <span class="text-[9px] text-emerald-500 font-semibold mt-1">Total Applied Capital</span>
                                 </div>
                             </div>
+
+                            <!-- Budget Justification Narrative -->
+                            <div class="bg-slate-50/50 rounded-xl p-4 border border-slate-200 flex-grow">
+                                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                                    <i class="fas fa-file-invoice-dollar text-emerald-500"></i> Budget Justification Statement
+                                </h3>
+                                <div id="budgetJustificationContent" class="text-xs text-slate-600 leading-relaxed text-justify max-h-[220px] overflow-y-auto pr-2"></div>
+                            </div>
+
+                            <!-- Budget Validation Warning Boxes -->
+                            <div id="budgetAlerts" class="space-y-2 mt-2"></div>
                         </div>
 
-                        <!-- Recalculation Output Panel -->
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                            <div class="text-center p-2">
-                                <span class="block text-xs font-bold text-slate-500 uppercase">Total Direct Costs</span>
-                                <span id="displayDirectTotal" class="text-2xl font-black text-slate-800">$0</span>
-                            </div>
-                            <div class="text-center p-2 border-y md:border-y-0 md:border-x border-slate-200">
-                                <span class="block text-xs font-bold text-slate-500 uppercase">Indirect Costs (Overhead)</span>
-                                <span id="displayIndirect" class="text-2xl font-black text-indigo-700">$0</span>
-                            </div>
-                            <div class="text-center p-2">
-                                <span class="block text-xs font-bold text-slate-500 uppercase">Total Overall Budget Request</span>
-                                <span id="displayGrandTotal" class="text-2xl font-black text-success">$0</span>
-                            </div>
-                        </div>
-
-                        <!-- Validation Alerts -->
-                        <div id="budgetAlerts" class="mt-4 space-y-2">
-                            <!-- Interactive warnings inject dynamically -->
-                        </div>
-
-                        <div class="mt-6 pt-6 border-t border-slate-200">
-                            <h3 class="text-sm font-bold text-slate-800 mb-2 flex items-center gap-1.5">
-                                <i class="fas fa-file-invoice-dollar text-emerald-600"></i> Budget Justification (Max 400 words)
-                            </h3>
-                            <div id="budgetJustificationContent" class="text-xs text-slate-600 leading-relaxed text-justify bg-slate-50 p-4 rounded-xl border border-slate-150">
-                                <p class="text-slate-400 italic">Will generate based on final study budget allocations...</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -514,8 +458,8 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 mt-auto py-6 mt-8">
-        <div class="max-w-6xl mx-auto px-4 text-center flex flex-col items-center justify-center gap-1.5">
+    <footer class="bg-white border-t border-slate-200 mt-auto py-6">
+        <div class="max-w-[1440px] mx-auto px-4 text-center flex flex-col items-center justify-center gap-1.5">
             <p class="text-sm text-slate-700 font-bold">&copy; 2026 Atif Amin Baig</p>
             <p class="text-xs text-slate-500 font-medium">Applied College, University of Tabuk, Tabuk, Kingdom of Saudi Arabia</p>
         </div>
@@ -571,13 +515,17 @@
         durationInput.addEventListener('input', (e) => {
             durationVal.textContent = `${e.target.value} Months`;
             currentProjectDuration = parseInt(e.target.value) || 36;
-            ganttTitleLabel.textContent = `${currentProjectDuration}-Month Project Timeline`;
+            if (ganttTitleLabel) {
+                ganttTitleLabel.textContent = `${currentProjectDuration}-Month Project Timeline`;
+            }
         });
 
         // Initialize duration state at startup
         currentProjectDuration = parseInt(durationInput.value) || 36;
         durationVal.textContent = `${currentProjectDuration} Months`;
-        ganttTitleLabel.textContent = `${currentProjectDuration}-Month Project Timeline`;
+        if (ganttTitleLabel) {
+            ganttTitleLabel.textContent = `${currentProjectDuration}-Month Project Timeline`;
+        }
 
         // API Configuration Persistence
         if (localStorage.getItem('geminiApiKey')) {
@@ -880,7 +828,9 @@
             
             // Set dynamic global state accurately
             currentProjectDuration = selectedDuration;
-            ganttTitleLabel.textContent = `${currentProjectDuration}-Month Project Timeline`;
+            if (ganttTitleLabel) {
+                ganttTitleLabel.textContent = `${currentProjectDuration}-Month Project Timeline`;
+            }
 
             if (!topic) {
                 showError("Please enter a topic or title of study.");
@@ -2578,7 +2528,7 @@
                         <td>Total Direct Cost Requests (Cap $100,000)</td>
                         <td style="text-align: right;">$${totalDirect.toLocaleString()}</td>
                     </tr>
-                    <tr><td>Institutional Indirect Overhead (Cap 10% of Direct)</td><td style="text-align: right; color:#4f46e5;">$${indirect.toLocaleString()}</td></tr>
+                    <tr><td>Indirect Overhead / Admin (Cap 10% of Direct)</td><td style="text-align: right; color:#4f46e5;">$${indirect.toLocaleString()}</td></tr>
                     <tr style="background-color: #ecfdf5; font-weight: bold; font-size:14px;">
                         <td>Total Overall Requested Project Funding</td>
                         <td style="text-align: right; color:#10b981;">$${grandTotal.toLocaleString()}</td>
